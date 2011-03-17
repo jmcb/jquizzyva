@@ -1,0 +1,8 @@
+*.swp
+*.pyc
+*.pyo
+*.pyd
+*.swo
+*.swd
+*.db
+lexicons/*.db
