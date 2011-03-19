@@ -91,7 +91,7 @@ class AbilitySearch (RangeSearch):
     pass
 
 class ProbabilityOrder (AbilitySearch):
-    pass # int, int
+    pass
 
 class LimitByProbabilityOrder (AbilitySearch):
     pass # int, int
@@ -156,10 +156,10 @@ class InWordList (StringListSearch):
         return (query, tuple(args))
 
 
-class BelongsToGroup (StringListSearch):
+class BelongsToGroup (SearchType):
     column = "words.word"
 
-    def __init__ (self, *args, **kwargs):
+    def __init__ (self, search_term_string, *args, **kwargs):
         super(BelongsToGroup, self).__init__(*args, **kwargs)
 
         self.search_string_list = ["Hook Words", "Front Hooks", "Back Hooks",
@@ -167,6 +167,32 @@ class BelongsToGroup (StringListSearch):
             "Type I Eights", "Type II Eights", "Type III Eights",
             "Eights From Seven-Letter Stems"]
 
+        assert search_term_string in self.search_string_list
+
+        self.search_term_string = search_term_string
+
     def clause (self):
         args = []
         query = ""
+
+        st = self.search_term_string
+
+        if "Hook" in st:
+            if self.negated:
+                m = "0"
+            else:
+                m = "1"
+
+            if "Front" in st:
+                query += "words.is_front_hook=?"
+                args.append(m)
+            elif "Back" in st:
+                query += "words.is_back_hook=?"
+                args.append(m)
+            elif "Words" in st:
+                query += "words.is_front_hook=? AND words.is_back_hook=?"
+                args.extend((m, m))
+
+            return (query, tuple(args))
+        else:
+            return ("", (, ))
