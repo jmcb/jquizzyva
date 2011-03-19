@@ -122,7 +122,7 @@ class AnagramMatch (StringSearch):
         return ("words.alphagram=?", (ag, ))
 
     def pattern (self):
-        if self.patternobj = None:
+        if self.patternobj == None:
             self.patternobj = pattern.Pattern(self.search_string)
 
         def search_function (word):
@@ -141,7 +141,7 @@ class SubanagramMatch (AnagramMatch):
         return CALLBACK_FUNCTION
 
     def pattern (self):
-        if self.patternobj = None
+        if self.patternobj == None:
             self.patternobj = pattern.SubPattern(self.search_string)
 
         def search_function (word):
