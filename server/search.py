@@ -123,7 +123,7 @@ class AnagramMatch (StringSearch):
 
     def pattern (self):
         if self.patternobj == None:
-            self.patternobj = pattern.Pattern(self.search_string)
+            self.patternobj = pattern.Pattern.fromstring(self.search_string)
 
         def search_function (word):
             return self.patternobj.try_word(word)
@@ -142,10 +142,12 @@ class SubanagramMatch (AnagramMatch):
 
     def pattern (self):
         if self.patternobj == None:
-            self.patternobj = pattern.SubPattern(self.search_string)
+            self.patternobj = pattern.SubPattern.fromstring(self.search_string)
 
         def search_function (word):
             return self.patternobj.try_word(word)
+
+        return search_function
 
 class TakesPrefix (StringSearch):
     """
