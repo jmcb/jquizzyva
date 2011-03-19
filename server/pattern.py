@@ -246,7 +246,7 @@ class Pattern (object):
             return "words.length=%s" % len(self)
 
     def __repr__ (self):
-        return "<%s '%s' wildcards=%s blanks=%s sets=%s letters=%s>" % (self.__class__.__name__, self.pattern, self.wildcards, self.blanks, self.sets, self.letters)
+        return "<%s '%s' wildcard=%s blanks=%s sets=%s letters=%s>" % (self.__class__.__name__, self.pattern, self.wildcard, self.blanks, self.sets, self.letters)
 
 class SubPattern (Pattern):
     """
