@@ -26,7 +26,7 @@ class DatabaseNotFoundError (Exception):
 
 class Database (object):
     db = None
-    connection = None
+    _connection = None
     last_query = None
     queries = None
 
@@ -42,9 +42,11 @@ class Database (object):
         """
         If not already connected, connect to the database.
         """
-        if not self.connection:
-            self.connection = sqlite3.connect(self.db)
-            self.connection.row_factory = dict_factory
+        if not self._connection:
+            self._connection = sqlite3.connect(self.db)
+            self._connection.row_factory = dict_factory
+
+        return self._connection
 
     def query (self, term, arguments=()):
         """
@@ -67,6 +69,11 @@ class Database (object):
         self.last_query = (term, arguments)
 
         return cursor.fetchall()
+
+    def register (self, function_name, function):
+        self.connection.create_function(function_name, 1, function)
+
+    connection = property(connect)
 
 def csw ():
     return Database(config.LEXICONS["CSW"])
