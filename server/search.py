@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 import sqlite3
 
 import pattern
@@ -66,6 +67,31 @@ class SearchType (object):
 
     def __repr__ (self):
         return str(self.__class__)
+
+    def asdict (self):
+        result = {"search_type": self.__class__.__name__}
+
+        for key, value in self.__dict__.iteritems():
+            if key.startswith("search"):
+                result[key] = value
+
+        return result
+
+    def asjson (self):
+        return json.dumps(self.asdict())
+
+    @classmethod
+    def fromdict (cls, ddict):
+        st = ddict.pop("search_type")
+
+        if not st == cls.__class__.__name__:
+            cls = globals()[st]
+
+        return cls(**ddict)
+
+    @classmethod
+    def fromjson (cls, jsond):
+        return cls.fromdict(json.loads(jsond))
 
 class StringSearch (SearchType):
     """
