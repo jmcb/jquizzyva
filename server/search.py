@@ -2,13 +2,14 @@
 
 import sqlite3
 
+import pattern
+
+CALLBACK_FUNCTION = "callback"
+
 def alphagram (string):
     """
     This converts a string into an 'alphagram': an alphabetically sorted string.
     """
-    if "[" in string or "?" in string:
-        return False
-
     return "".join(sorted(list(string.upper())))
 
 class SearchType (object):
@@ -110,21 +111,41 @@ class AnagramMatch (StringSearch):
     provided.
     """
 
+    patternobj = None
+
     def clause (self):
-        if "?" in self.search_string or "[" in self.search_string:
-            return False
+        if "?" in self.search_string or "[" in self.search_string or "*" in self.search_string:
+            return CALLBACK_FUNCTION
 
         ag = alphagram(self.search_string)
 
         return ("words.alphagram=?", (ag, ))
 
-class SubanagramMatch (StringSearch):
+    def pattern (self):
+        if self.patternobj = None:
+            self.patternobj = pattern.Pattern(self.search_string)
+
+        def search_function (word):
+            return self.patternobj.try_word(word)
+
+        return search_function
+
+class SubanagramMatch (AnagramMatch):
     """
     A derivative of StringSearch, this search, like AnagramMatch, searches for
     anagrams of the string provided. However, it will search for anagrams of
     any length, of any combination of the contained string.
     """
-    pass
+
+    def clause (self):
+        return CALLBACK_FUNCTION
+
+    def pattern (self):
+        if self.patternobj = None
+            self.patternobj = pattern.SubPattern(self.search_string)
+
+        def search_function (word):
+            return self.patternobj.try_word(word)
 
 class TakesPrefix (StringSearch):
     """
@@ -307,4 +328,4 @@ class BelongsToGroup (SearchType):
 
             return (query, tuple(args))
         else:
-            return ("", ())
+            return False
