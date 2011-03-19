@@ -2,6 +2,15 @@
 
 import sqlite3
 
+def alphagram (string):
+    """
+    This converts a string into an 'alphagram': an alphabetically sorted string.
+    """
+    if "[" in string or "?" in string:
+        return False
+
+    return "".join(sorted(list(string.upper())))
+
 class SearchType (object):
     negated = False
 
