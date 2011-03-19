@@ -74,7 +74,7 @@ class Pattern (object):
         letters, the number of "blank" placeholders, and the number of required
         letters still available.
         """
-        return len(self.letters) + sum(len(cset) for cset in self.sets) + self.blanks
+        return len(self.letters) + len(self.sets) + self.blanks
 
     @classmethod
     def fromstring (cls, pattern, subanagram=False):
