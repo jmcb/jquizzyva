@@ -12,23 +12,75 @@ def alphagram (string):
     return "".join(sorted(list(string.upper())))
 
 class SearchType (object):
+    """
+    This is the basic search type object from which all of our search types
+    derive. Primarily they provide a way of automatically generating SQL WHERE
+    clauses for searching, but in a secondary manner provide limiting and
+    filtering of results.
+    """
+
     negated = False
 
     def __init__ (self, negated=False):
+        """
+        Create a new search type. This provides access for negation of search
+        terms on a general basis, but otherwise all search terms created should
+        be derivatives of this class; it should never be insantiated directly.
+
+        :param negated: If True, the search term will be negated. Default False.
+        """
+
         super(SearchType, self).__init__()
 
         self.negated = negated
-        
+
+    def negate (self):
+        """
+        Manually mark the search term as being negated.
+        """
+
+        self.negated = True
+
     def clause (self):
-        return ("", ())
+        """
+        Generate a clause or series of clauses to be appended to an SQL
+        statement. It returns False to denote that there is no clause for this
+        constraint.
+        """
+
+        return False
+
+    def limit (result):
+        """
+        Limit returned results by filtering them according to some specific
+        pattern. It is expected that the limiting will be in-place, and that
+        the new "limited" result list will be returned by this function.
+
+        :param result: This consists of the list of results from the database;
+            note that this result list may have already been limited by a
+            previous query.
+        """
+
+        return result
 
     def __repr__ (self):
         return str(self.__class__)
 
 class StringSearch (SearchType):
+    """
+    This is another base-type for string-based searches, and should not be
+    instantiated directly.
+    """
+
     search_string = None
 
     def __init__ (self, search_string="", *args, **kwargs):
+        """
+        Create a new string-based search.
+
+        :param search_string: This string is the parameter that is stored and
+            is then used when generating WHERE clauses.
+        """
         super(StringSearch, self).__init__(*args, **kwargs)
 
         self.search_string = search_string
@@ -37,6 +89,11 @@ class StringSearch (SearchType):
         return "<%s search_string:%s>" % (self.__class__.__name__, self.search_string)
 
 class PatternMatch (StringSearch):
+    """
+    A derivative of StringSearch, this search applies a pattern specifically to
+    the database.
+    """
+
     column = "words.word"
 
     def clause (self):
@@ -48,22 +105,61 @@ class PatternMatch (StringSearch):
             return ("%s NOT LIKE ?" % self.column, (st, ))
 
 class AnagramMatch (StringSearch):
-    pass # string
+    """
+    A derivative of StringSearch, this search looks for anagrams of the string
+    provided.
+    """
+
+    def clause (self):
+        if "?" in self.search_string or "[" in self.search_string:
+            return False
+
+        ag = alphagram(self.search_string)
+
+        return ("words.alphagram=?", (ag, ))
 
 class SubanagramMatch (StringSearch):
-    pass # string
+    """
+    A derivative of StringSearch, this search, like AnagramMatch, searches for
+    anagrams of the string provided. However, it will search for anagrams of
+    any length, of any combination of the contained string.
+    """
+    pass
 
 class TakesPrefix (StringSearch):
-    pass # string
+    """
+    This is a limiting search that ensures that the words returned are only
+    words which take a specific prefix.
+    """
+    pass
 
 class TakesSuffix (StringSearch):
-    pass # string
+    """
+    As per TakesPrefix, only apply to words which take a specific suffix
+    instead.
+    """
+    pass
 
 class RangeSearch (SearchType):
+    """
+    This search specifies integer "start" and "stop" values, and limits results
+    to those whose specific column value falls between these two values; if the
+    "start" and "stop" parameters are the same, or the stop value is less than
+    the start value, only results whose column value matches the "start" value
+    will be returned.
+    """
+
     search_range_start = 0
     search_range_stop = 0
 
     def __init__ (self, search_range_start=0, search_range_stop=0, *args, **kwargs):
+        """
+        Create a new RangeSearch.
+
+        :param search_range_start: The starting range limiter.
+        :param search_range_stop: The stopping range limiter.
+        """
+
         super(RangeSearch, self).__init__(*args, **kwargs)
 
         self.search_range_start = search_range_start
@@ -82,18 +178,40 @@ class RangeSearch (SearchType):
         return "<%s search_range_start:%s, search_range_stop:%s>" % (self.__class__.__name__, self.search_range_start, self.search_range_stop)
 
 class Length (RangeSearch):
+    """
+    This search limits results to words of a specific length -- either within a
+    range or or a certain value.
+    """
     column = "words.length"
 
 class NumberOfVowels (RangeSearch):
+    """
+    This search limits results to words which contain either a specific number
+    of vowels, or a number of vowels that falls between a specified range.
+    """
     column = "words.num_vowels"
 
 class NumberOfUniqueLetters (RangeSearch):
+    """
+    This search limits results to words which container either a specific
+    number of unique letters, or whose number of unique letters falls between a
+    specified range.
+    """
     column = "words.num_unique_letters"
 
 class PointValue (RangeSearch):
+    """
+    This search limits results to words who have either a specific 'point'
+    value, or whose 'point' value falls between a specified range.
+    """
     column = "words.point_value"
 
 class NumberOfAnagrams (RangeSearch):
+    """
+    This search limits results to words who either have a specific number of
+    anagrams possible, or whose number of possible anagrams falls between a
+    specified range.
+    """
     column = "words.num_anagrams"
 
 class ConsistsOf (StringSearch, RangeSearch):
@@ -189,4 +307,4 @@ class BelongsToGroup (SearchType):
 
             return (query, tuple(args))
         else:
-            return ("", (, ))
+            return ("", ())
