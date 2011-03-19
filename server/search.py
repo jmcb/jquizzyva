@@ -156,6 +156,9 @@ class AnagramMatch (StringSearch):
 
         return search_function
 
+    def bounds (self):
+        return self.patternobj.bounds()
+
 class SubanagramMatch (AnagramMatch):
     """
     A derivative of StringSearch, this search, like AnagramMatch, searches for
@@ -357,3 +360,63 @@ class BelongsToGroup (SearchType):
             return (query, tuple(args))
         else:
             return False
+
+class SearchList (object):
+    searches = None
+
+    def __init__ (self, searches=None):
+        super(SearchList, self).__init__()
+
+        self.searches = []
+
+        if searches:
+            try:
+                self.searches.extend(searches)
+            except TypeError:
+                self.searches.append(searches)
+
+    def append (self, item):
+        self.searches.append(item)
+
+    def query (self):
+        args = []
+        functions = {}
+        query = "SELECT word FROM words WHERE "
+
+        maybe_query = None
+
+        for constraint in self.searches:
+            try:
+                squery, subargs = constraint.clause()
+            except ValueError:
+                ind = len(functions)+1
+                squery = "anagrammer%s(words.alphagram)" % ind
+                subargs = []
+                functions["anagrammer%s" % ind] = constraint.pattern()
+                bounds = constraint.bounds()
+                if (maybe_query and int(maybe_query[-1]) < int(bounds[-1])) or not maybe_query:
+                    maybe_query = bounds
+
+            if not query.endswith("WHERE "):
+                query += " AND "
+
+            query += squery
+
+            args.extend(subargs)
+
+        if "words.length" not in query and maybe_query:
+            query += " AND " + maybe_query
+
+        return (query, args, functions)
+
+    def run (self, database):
+        query, args, functions = self.query()
+
+        if functions:
+            for fname, fn in functions.items():
+                database.register(fname, fn)
+
+        return database.query(query, args)
+
+    def __repr__ (self):
+        return "<SearchList %s>" % self.searches
