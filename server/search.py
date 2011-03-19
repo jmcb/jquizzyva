@@ -87,21 +87,6 @@ class PointValue (RangeSearch):
 class NumberOfAnagrams (RangeSearch):
     column = "words.num_anagrams"
 
-class AbilitySearch (RangeSearch):
-    pass
-
-class ProbabilityOrder (AbilitySearch):
-    pass
-
-class LimitByProbabilityOrder (AbilitySearch):
-    pass # int, int
-
-class PlayabilityOrder (AbilitySearch):
-    pass # int, int
-
-class LimitByPlayabilityOrder (AbilitySearch):
-    pass # int, int
-
 class ConsistsOf (StringSearch, RangeSearch):
     def __repr__ (self):
         return "<%s search_range_start:%s, search_range_stop:%s, search_string:%s>" % (self.__class__.__name__, self.search_range_start, self.search_range_stop, self.search_string)
