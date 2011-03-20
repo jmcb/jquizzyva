@@ -135,7 +135,7 @@ class Pattern (object):
         """
         blanks = self.blanks
         letters = self.letters[:]
-        letters_set = self.letters_set
+        letters_set = set(self.letters_set)
         sets = self.sets[:]
         length = self.length
         subanagram = self.subanagram
@@ -156,6 +156,7 @@ class Pattern (object):
                     continue
                 else:
                     letters_set.discard(letter)
+                    continue
 
             if sets:
                 got_set = None
