@@ -79,7 +79,7 @@ class Database (object):
     def register (self, function_name, function):
         self.connection.create_function(function_name, 1, function)
 
-    def search (self, searchlist):
+    def search (self, searchlist, show_query=False):
         try:
             query, args, functions = searchlist.query()
         except AttributeError:
@@ -89,6 +89,9 @@ class Database (object):
         if functions:
             for fname, fn in functions.items():
                 self.register(fname, util.memoize.Memoizer(fn))
+
+        if show_query:
+            print query.replace("?", "%s") % args
 
         return self.query(query, args)
 
