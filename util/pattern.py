@@ -114,11 +114,9 @@ class Pattern (object):
 
         pattern = pattern.replace("?", "").replace("*", "")
 
-        sets = SET_FINDER.findall(pattern)
-
-        for set in sets:
-            pattern = pattern.replace("[%s]" % set, "")
-            self.sets.append(list(set))
+        for cset in SET_FINDER.findall(pattern):
+            pattern = pattern.replace("[%s]" % cset, "")
+            self.sets.append(set(cset))
 
         self.letters = list(pattern)
 
