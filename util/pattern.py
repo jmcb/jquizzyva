@@ -1,10 +1,22 @@
 #!/usr/bin/env python
 
+import functools
 import re
 
 SET_FINDER = re.compile("\[([A-Z]+)\]")
 
 MAX_WORD_LENGTH = 16
+
+def saved (function):
+
+    @functools.wraps(function)
+    def saver (self, word):
+        self.save()
+        result = function(self, word)
+        self.restore()
+        return result
+
+    return saver
 
 class Pattern (object):
     """
@@ -202,6 +214,13 @@ class Pattern (object):
 
         return False
 
+    def save (self):
+        self.saved_values = (self.pattern, self.blanks, self.wildcard, [cset[:] for cset in self.sets], self.letters[:], self.subanagram)
+
+    def restore (self):
+        self.pattern, self.blanks, self.wildcard, self.sets, self.letters, self.subanagram = self.saved_values
+
+    @saved
     def try_word (self, word):
         """
         Statefully determine if a word matches the current pattern; this method
@@ -211,23 +230,21 @@ class Pattern (object):
         :param word: The word to be checked against the current pattern.
         """
 
-        clone = self.clone()
-
         word = word.upper()
 
         wordlen = len(word)
 
-        if wordlen > len(clone):
+        if wordlen > len(self):
             return False
 
-        if wordlen < clone.length and not self.subanagram:
+        if wordlen < self.length and not self.subanagram:
             return False
 
         for letter in word:
-            if not clone.try_letter(letter):
+            if not self.try_letter(letter):
                 return False
 
-        if clone.calc_length() > 0 and not self.subanagram:
+        if self.calc_length() > 0 and not self.subanagram:
             return False
 
         return True
