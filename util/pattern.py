@@ -143,10 +143,10 @@ class Pattern (object):
 
         wordlen = len(word)
 
-        if wordlen > len(self):
+        if not wildcard and wordlen > length:
             return False
 
-        if wordlen < self.length and not self.subanagram:
+        if wordlen < length and not subanagram:
             return False
 
         for letter in word:
