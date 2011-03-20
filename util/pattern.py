@@ -150,10 +150,36 @@ class Pattern (object):
             return False
 
         for letter in word:
-            if not self.try_letter(letter):
-                return False
+            if letter in letters_set:
+                if letter in letters:
+                    del letters[letters.index(letter)]
+                    continue
+                else:
+                    letters_set.discard(letter)
 
-        if self.calc_length() > 0 and not self.subanagram:
+            if sets:
+                got_set = None
+
+                for cind, cset in enumerate(sets):
+                    if letter in cset:
+                        got_set = cind
+                    else:
+                        continue
+
+                if got_set is not None:
+                    del sets[got_set]
+                    continue
+
+            if blanks > 0:
+                blanks -= 1
+                continue
+
+            if wildcard:
+                continue
+
+            return False
+
+        if letters and sets and blanks and not subanagram:
             return False
 
         return True
