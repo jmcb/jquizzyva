@@ -73,6 +73,19 @@ class Database (object):
     def register (self, function_name, function):
         self.connection.create_function(function_name, 1, function)
 
+    def search (self, searchlist):
+        try:
+            query, args, functions = searchlist.query()
+        except AttributeError:
+            searchlist = search.SearchList(searchlist)
+            query, args, functions = searchlist.query()
+
+        if functions:
+            for fname, fn in functions.items():
+                self.register(fname, fn)
+
+        return self.query(query, args)
+
     connection = property(connect)
 
 def csw ():

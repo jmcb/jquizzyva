@@ -406,15 +406,6 @@ class SearchList (object):
 
         return (query, args, functions)
 
-    def run (self, database):
-        query, args, functions = self.query()
-
-        if functions:
-            for fname, fn in functions.items():
-                database.register(fname, fn)
-
-        return database.query(query, args)
-
     def __repr__ (self):
         return "<SearchList %s>" % self.searches
 
