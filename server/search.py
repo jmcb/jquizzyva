@@ -364,16 +364,13 @@ class BelongsToGroup (SearchType):
 class SearchList (object):
     searches = None
 
-    def __init__ (self, searches=None):
+    def __init__ (self, *searches):
         super(SearchList, self).__init__()
 
         self.searches = []
 
         if searches:
-            try:
-                self.searches.extend(searches)
-            except TypeError:
-                self.searches.append(searches)
+            self.searches.extend(searches)
 
     def append (self, item):
         self.searches.append(item)
@@ -420,3 +417,17 @@ class SearchList (object):
 
     def __repr__ (self):
         return "<SearchList %s>" % self.searches
+
+    def asdicts (self):
+        return [item.asdict() for item in self.searches]
+
+    def asjson (self):
+        return json.dumps(self.asdicts())
+
+    @classmethod
+    def fromdicts (cls, items):
+        return cls(*[SearchType.fromdict(item) for item in items])
+
+    @classmethod
+    def fromjson (cls, jsond):
+        return cls.fromdict(json.loads(jsond))
