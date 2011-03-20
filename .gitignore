@@ -6,3 +6,6 @@
 *.swd
 *.db
 lexicons/*.db
+profiles/
+test.py
+util/test.py
