@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
 LEXICONS = {
-    "CSW": "../lexicon/CSW.db"
+    "CSW": "lexicon/CSW.db",
 }
