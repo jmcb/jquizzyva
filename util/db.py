@@ -3,7 +3,7 @@
 import os
 import sqlite3
 
-import config
+import util.config
 
 words_schema = ['word', 'length', 'playability', 'playability_order', 'min_playability_order','max_playability_order', 'combinations0', 'probability_order0', 'min_probability_order0', 'max_probability_order0', 'combinations1', 'probability_order1', 'min_probability_order1', 'max_probability_order1', 'combinations2', 'probability_order2', 'min_probability_order2', 'max_probability_order2', 'alphagram', 'num_anagrams', 'num_unique_letters', 'num_vowels', 'point_value', 'front_hooks', 'back_hooks', 'is_front_hook', 'is_back_hook', 'lexicon_symbols', 'definition']
 

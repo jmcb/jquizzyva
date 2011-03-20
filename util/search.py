@@ -3,7 +3,7 @@
 import json
 import sqlite3
 
-import pattern
+import util.pattern
 
 CALLBACK_FUNCTION = "callback"
 
