@@ -119,7 +119,6 @@ class Pattern (object):
             self.sets.append(set(cset))
 
         self.letters = list(pattern)
-        self.letters_set = set(self.letters)
 
         self.length = self.calc_length()
 
@@ -135,7 +134,6 @@ class Pattern (object):
         """
         blanks = self.blanks
         letters = self.letters[:]
-        letters_set = set(self.letters_set)
         sets = self.sets[:]
         length = self.length
         subanagram = self.subanagram
@@ -150,26 +148,21 @@ class Pattern (object):
             return False
 
         for letter in word:
-            if letter in letters_set:
-                if letter in letters:
-                    del letters[letters.index(letter)]
-                    continue
+            if letter in letters:
+                del letters[letters.index(letter)]
+                continue
+
+            got_set = None
+
+            for cind, cset in enumerate(sets):
+                if letter in cset:
+                    got_set = cind
                 else:
-                    letters_set.discard(letter)
                     continue
 
-            if sets:
-                got_set = None
-
-                for cind, cset in enumerate(sets):
-                    if letter in cset:
-                        got_set = cind
-                    else:
-                        continue
-
-                if got_set is not None:
-                    del sets[got_set]
-                    continue
+            if got_set is not None:
+                del sets[got_set]
+                continue
 
             if blanks > 0:
                 blanks -= 1
