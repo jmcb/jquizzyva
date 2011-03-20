@@ -133,8 +133,13 @@ class Pattern (object):
 
         :param word: The word to be checked against the current pattern.
         """
-
-        word = word.upper()
+        blanks = self.blanks
+        letters = self.letters[:]
+        letters_set = self.letters_set
+        sets = self.sets[:]
+        length = self.length
+        subanagram = self.subanagram
+        wildcard = self.wildcard
 
         wordlen = len(word)
 
