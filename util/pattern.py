@@ -3,7 +3,7 @@
 import functools
 import re
 
-SET_FINDER = re.compile("\[([A-Z]+)\]")
+SET_FINDER = re.compile("\[(\^?:?[A-Z]+)\]")
 
 MAX_WORD_LENGTH = 16
 
@@ -86,7 +86,11 @@ class Pattern (object):
         letters, the number of "blank" placeholders, and the number of required
         letters still available.
         """
-        return len(self.letters) + len(self.sets) + self.blanks
+        length = len(self.letters) + len(self.sets) + self.blanks
+        if self.neg_set is not None:
+            length += 1
+
+        return length
 
     @classmethod
     def fromstring (cls, pattern, subanagram=False):
@@ -111,12 +115,41 @@ class Pattern (object):
             self.wildcard = True
 
         self.sets = []
+        self.neg_set = None
 
         pattern = pattern.replace("?", "").replace("*", "")
 
         for cset in SET_FINDER.findall(pattern):
             pattern = pattern.replace("[%s]" % cset, "")
-            self.sets.append(set(cset))
+
+            nset = None
+            neg = False
+
+            if "^" in cset:
+                neg = True
+                cset = cset[1:]
+
+            if ":" in cset:
+                if cset[1] == "C": # Consonants
+                    nset = set("BCDFGHJKLMNPQRSTVWXYZ")
+                elif cset[1] == "V": # Vowels
+                    nset = set("AEIOU")
+                elif cset[1] == "H": # Heavies
+                    nset = set("JKZQX")
+                elif cset[1] == "M": # Mediums
+                    nset = set("HFVWY")
+                elif cset[1] == "L": # Lights
+                    nset = set("PCMB")
+                elif cset[1] == "T" or cset[1] == "P": # Twos and "Pips"
+                    nset = set("AEIOUDGLNRST")
+            else:
+                nset = set(cset)
+
+            if neg:
+                assert self.neg_set is None
+                self.neg_set = nset
+            else:
+                self.sets.append(nset)
 
         self.letters = list(pattern)
 
@@ -135,6 +168,7 @@ class Pattern (object):
         blanks = self.blanks
         letters = self.letters[:]
         sets = self.sets[:]
+        nset = self.neg_set
         length = self.length
         subanagram = self.subanagram
         wildcard = self.wildcard
@@ -151,6 +185,13 @@ class Pattern (object):
             if letter in letters:
                 del letters[letters.index(letter)]
                 continue
+
+            if nset:
+                if letter in nset:
+                    return False
+                else:
+                    nset = None
+                    continue
 
             got_set = None
 
