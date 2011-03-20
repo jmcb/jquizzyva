@@ -6,6 +6,8 @@ class Memoizer (object):
     def __init__ (self, function):
         self.hash = {}
 
+        self.function = function
+
         self.__name__ = function.__name__
         self.__doc__ = function.__doc__
 
