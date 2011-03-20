@@ -86,11 +86,7 @@ class Pattern (object):
         letters, the number of "blank" placeholders, and the number of required
         letters still available.
         """
-        length = len(self.letters) + len(self.sets) + self.blanks
-        if self.neg_set is not None:
-            length += 1
-
-        return length
+        return len(self.letters) + len(self.sets) + len(self.neg_sets) + self.blanks
 
     @classmethod
     def fromstring (cls, pattern, subanagram=False):
@@ -115,7 +111,7 @@ class Pattern (object):
             self.wildcard = True
 
         self.sets = []
-        self.neg_set = None
+        self.neg_sets = []
 
         pattern = pattern.replace("?", "").replace("*", "")
 
@@ -146,8 +142,7 @@ class Pattern (object):
                 nset = set(cset)
 
             if neg:
-                assert self.neg_set is None
-                self.neg_set = nset
+                self.neg_sets.append(nset)
             else:
                 self.sets.append(nset)
 
@@ -168,7 +163,7 @@ class Pattern (object):
         blanks = self.blanks
         letters = self.letters[:]
         sets = self.sets[:]
-        nset = self.neg_set
+        nsets = self.neg_sets[:]
         length = self.length
         subanagram = self.subanagram
         wildcard = self.wildcard
@@ -186,12 +181,18 @@ class Pattern (object):
                 del letters[letters.index(letter)]
                 continue
 
-            if nset:
+            got_nset = None
+
+            for nind, nset in enumerate(nsets):
                 if letter in nset:
                     return False
                 else:
-                    nset = None
+                    got_nset = nind
                     continue
+
+            if got_nset is not None:
+                del nsets[got_nset]
+                continue
 
             got_set = None
 
