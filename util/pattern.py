@@ -119,6 +119,7 @@ class Pattern (object):
             self.sets.append(set(cset))
 
         self.letters = list(pattern)
+        self.letters_set = set(self.letters)
 
         self.length = self.calc_length()
 
