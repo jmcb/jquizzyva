@@ -86,8 +86,6 @@ class Database (object):
             searchlist = search.SearchList(searchlist)
             query, args, functions = searchlist.query()
 
-        print query, args, functions
-
         if functions:
             for fname, fn in functions.items():
                 self.register(fname, util.memoize.Memoizer(fn))
