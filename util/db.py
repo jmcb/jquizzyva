@@ -83,7 +83,7 @@ class Database (object):
         try:
             query, args, functions = searchlist.query()
         except AttributeError:
-            searchlist = search.SearchList(searchlist)
+            searchlist = util.search.SearchList(searchlist)
             query, args, functions = searchlist.query()
 
         if functions:
