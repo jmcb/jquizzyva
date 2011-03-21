@@ -36,7 +36,7 @@ cdef int _try_word (CPattern pattern, char* word):
     cdef int wordlen = len(word)
     cdef int num_sets = pattern.num_sets
     cdef int num_neg_sets = pattern.num_neg_sets
-    cdef int letterslen = pattern.num_letters
+    cdef int num_letters = pattern.num_letters
 
     cdef list letters = pattern.letters[:]
     cdef list sets = pattern.sets[:]
@@ -69,6 +69,7 @@ cdef int _try_word (CPattern pattern, char* word):
         if letter in letters:
             index = letters.index(letter)
             del letters[index]
+            num_letters -= 1
             continue
 
         got_nset = -1
@@ -112,7 +113,7 @@ cdef int _try_word (CPattern pattern, char* word):
 
         return 0
 
-    if letters and sets and blanks and not subanagram:
+    if (num_letters or num_sets or blanks) and not subanagram:
         return 0
 
     return 1
