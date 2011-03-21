@@ -8,9 +8,10 @@ SET_FINDER = re.compile("\[(\^?:?[A-Z]+)\]")
 MAX_WORD_LENGTH = 16
 
 try:
-    from util._pattern import try_word
+    from util._pattern import try_word, CPattern
 except ImportError:
     try_word = None
+    CPattern = None
 
 class Pattern (object):
     """
@@ -38,6 +39,7 @@ class Pattern (object):
     wildcard = False
     sets = None
     letters = None
+    cpattern = None
 
     length = 0
 
@@ -146,6 +148,17 @@ class Pattern (object):
 
         return self
 
+    def as_cpattern (self):
+        if self.cpattern is not None:
+            return self.cpattern
+
+        if CPattern is None:
+            return None
+
+        self.cpattern = CPattern(self.blanks, self.length, len(self.letters), "".join(self.letters), [ord(l) for l in self.letters], len(self.sets), [[ord(l) for l in s] for s in self.sets], len(self.neg_sets), [[ord(l) for l in s] for s in self.neg_sets], self.subanagram, self.wildcard)
+
+        return self.cpattern
+
     def try_word (self, word):
         """
         Statefully determine if a word matches the current pattern; this method
@@ -155,7 +168,7 @@ class Pattern (object):
         :param word: The word to be checked against the current pattern.
         """
         if try_word is not None:
-            return try_word(self, word)
+            return bool(try_word(self.as_cpattern(), word))
 
         blanks = self.blanks
         letters = self.letters[:]
