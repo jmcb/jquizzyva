@@ -155,7 +155,7 @@ class Pattern (object):
         if CPattern is None:
             return None
 
-        self.cpattern = CPattern(self.blanks, self.length, len(self.letters), "".join(self.letters), [ord(l) for l in self.letters], len(self.sets), [[ord(l) for l in s] for s in self.sets], len(self.neg_sets), [[ord(l) for l in s] for s in self.neg_sets], self.subanagram, self.wildcard)
+        self.cpattern = CPattern(self.blanks, self.length, len(self.letters), [ord(l) for l in self.letters], len(self.sets), [[ord(l) for l in s] for s in self.sets], len(self.neg_sets), [[ord(l) for l in s] for s in self.neg_sets], self.subanagram, self.wildcard)
 
         return self.cpattern
 

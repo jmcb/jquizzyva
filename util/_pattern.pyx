@@ -11,12 +11,11 @@ cdef class CPattern (object):
     cdef int num_neg_sets
     cdef bint subanagram
     cdef bint wildcard
-    cdef char* chr_letters
     cdef list sets
     cdef list neg_sets
     cdef list letters
 
-    def __init__ (CPattern self, int blanks, int length, int num_letters, char* chr_letters, list letters, int num_sets, list sets, int num_neg_sets, list neg_sets, bint subanagram, bint wildcard):
+    def __init__ (CPattern self, int blanks, int length, int num_letters, list letters, int num_sets, list sets, int num_neg_sets, list neg_sets, bint subanagram, bint wildcard):
         self.blanks = blanks
         self.length = length
         self.num_letters = num_letters
@@ -24,7 +23,6 @@ cdef class CPattern (object):
         self.num_neg_sets = num_neg_sets
         self.subanagram = subanagram
         self.wildcard = wildcard
-        self.chr_letters = chr_letters
         self.sets = sets
         self.neg_sets = neg_sets
         self.letters = letters
@@ -39,7 +37,6 @@ cdef int _try_word (CPattern pattern, char* word):
     cdef int num_sets = pattern.num_sets
     cdef int num_neg_sets = pattern.num_neg_sets
     cdef int letterslen = pattern.num_letters
-    cdef char* cletters = pattern.chr_letters
 
     cdef list letters = pattern.letters[:]
     cdef list sets = pattern.sets[:]
@@ -69,11 +66,10 @@ cdef int _try_word (CPattern pattern, char* word):
     for let from 0 <= let < wordlen:
         letter = word[let]
 
-        if letter in cletters:
-            if letter in letters:
-                index = letters.index(letter)
-                del letters[index]
-                continue
+        if letter in letters:
+            index = letters.index(letter)
+            del letters[index]
+            continue
 
         got_nset = -1
 
