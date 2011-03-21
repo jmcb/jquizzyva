@@ -6,6 +6,13 @@ import sqlite3
 import util.config
 import util.memoize
 
+try:
+    import util._pattern
+except ImportError:
+    DO_MEMOIZE = True
+else:
+    DO_MEMOIZE = False
+
 words_schema = ['word', 'length', 'playability', 'playability_order', 'min_playability_order','max_playability_order', 'combinations0', 'probability_order0', 'min_probability_order0', 'max_probability_order0', 'combinations1', 'probability_order1', 'min_probability_order1', 'max_probability_order1', 'combinations2', 'probability_order2', 'min_probability_order2', 'max_probability_order2', 'alphagram', 'num_anagrams', 'num_unique_letters', 'num_vowels', 'point_value', 'front_hooks', 'back_hooks', 'is_front_hook', 'is_back_hook', 'lexicon_symbols', 'definition']
 words_schema2 = ['word', 'length', 'alphagram', 'num_anagrams', 'num_unique_letters', 'num_vowels', 'point_value', 'front_hooks', 'back_hooks', 'is_front_hook', 'is_back_hook', 'lexicon_symbols', 'definition']
 
@@ -88,7 +95,10 @@ class Database (object):
 
         if functions:
             for fname, fn in functions.items():
-                self.register(fname, util.memoize.Memoizer(fn))
+                if DO_MEMOIZE:
+                    self.register(fname, util.memoize.Memoizer(fn))
+                else:
+                    self.register(fname, fn)
 
         if show_query:
             print query.replace("?", "%s") % args
