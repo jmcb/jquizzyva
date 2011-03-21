@@ -7,16 +7,10 @@ SET_FINDER = re.compile("\[(\^?:?[A-Z]+)\]")
 
 MAX_WORD_LENGTH = 16
 
-def saved (function):
-
-    @functools.wraps(function)
-    def saver (self, word):
-        self.save()
-        result = function(self, word)
-        self.restore()
-        return result
-
-    return saver
+try:
+    from util._pattern import try_word
+except ImportError:
+    try_word = None
 
 class Pattern (object):
     """
@@ -160,6 +154,9 @@ class Pattern (object):
 
         :param word: The word to be checked against the current pattern.
         """
+        if try_word is not None:
+            return try_word(self, word)
+
         blanks = self.blanks
         letters = self.letters[:]
         sets = self.sets[:]
