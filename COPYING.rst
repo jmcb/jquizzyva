@@ -21,3 +21,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+---
+
+The "jQuizzyva icon" is a modified version of `Zyzzyva.jpg`_, found on
+Wikimedia Commons, by Matthew Fang. It is licensed under a CreativeCommons
+Attribution ShareAlike license. Likewise, this vector image
+(``util/jquivvyza.svg``) is licensed as CreativeCommons Attribution ShareAlike.
+
+.. _`Zyzzyva.jpg`: http://commons.wikimedia.org/wiki/File:Zyzzyva.jpg
