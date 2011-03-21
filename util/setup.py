@@ -5,7 +5,7 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
 ext_modules = [Extension("_pattern", ["_pattern.pyx"]),
-               Extension("_memoize", ["_memoize.pyx"])]
+               Extension("_search", ["_search.pyx"]),]
 
 setup(
   name = 'jquizzyva extensions',

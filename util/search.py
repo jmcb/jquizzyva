@@ -131,52 +131,55 @@ class PatternMatch (StringSearch):
         else:
             return ("%s NOT LIKE ?" % self.column, (st, ))
 
-class AnagramMatch (StringSearch):
-    """
-    A derivative of StringSearch, this search looks for anagrams of the string
-    provided.
-    """
+try:
+    from util._search import AnagramMatch, SubanagramMatch
+except:
+    class AnagramMatch (StringSearch):
+        """
+        A derivative of StringSearch, this search looks for anagrams of the string
+        provided.
+        """
 
-    patternobj = None
+        patternobj = None
 
-    def clause (self):
-        if "?" in self.search_string or "[" in self.search_string or "*" in self.search_string:
+        def clause (self):
+            if "?" in self.search_string or "[" in self.search_string or "*" in self.search_string:
+                return CALLBACK_FUNCTION
+
+            ag = alphagram(self.search_string)
+
+            return ("words.alphagram=?", (ag, ))
+
+        def pattern (self):
+            if self.patternobj == None:
+                self.patternobj = util.pattern.Pattern.fromstring(self.search_string)
+
+            def search_function (word):
+                return self.patternobj.try_word(word)
+
+            return search_function
+
+        def bounds (self):
+            return self.patternobj.bounds()
+
+    class SubanagramMatch (AnagramMatch):
+        """
+        A derivative of StringSearch, this search, like AnagramMatch, searches for
+        anagrams of the string provided. However, it will search for anagrams of
+        any length, of any combination of the contained string.
+        """
+
+        def clause (self):
             return CALLBACK_FUNCTION
 
-        ag = alphagram(self.search_string)
+        def pattern (self):
+            if self.patternobj == None:
+                self.patternobj = util.pattern.SubPattern.fromstring(self.search_string)
 
-        return ("words.alphagram=?", (ag, ))
+            def search_function (word):
+                return self.patternobj.try_word(word)
 
-    def pattern (self):
-        if self.patternobj == None:
-            self.patternobj = util.pattern.Pattern.fromstring(self.search_string)
-
-        def search_function (word):
-            return self.patternobj.try_word(word)
-
-        return search_function
-
-    def bounds (self):
-        return self.patternobj.bounds()
-
-class SubanagramMatch (AnagramMatch):
-    """
-    A derivative of StringSearch, this search, like AnagramMatch, searches for
-    anagrams of the string provided. However, it will search for anagrams of
-    any length, of any combination of the contained string.
-    """
-
-    def clause (self):
-        return CALLBACK_FUNCTION
-
-    def pattern (self):
-        if self.patternobj == None:
-            self.patternobj = util.pattern.SubPattern.fromstring(self.search_string)
-
-        def search_function (word):
-            return self.patternobj.try_word(word)
-
-        return search_function
+            return search_function
 
 class TakesPrefix (StringSearch):
     """
