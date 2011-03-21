@@ -8,4 +8,8 @@
 lexicons/*.db
 profiles/
 test.py
-util/test.py
+util/test*.py
+util/*.html
+build
+util/build
+stats
