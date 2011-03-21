@@ -69,7 +69,7 @@ class SearchType (object):
         return str(self.__class__)
 
     def asdict (self):
-        result = {"search_type": self.__class__.__name__}
+        result = {"search_type": self.__class__.__name__, "negated": self.negated}
 
         for key, value in self.__dict__.iteritems():
             if key.startswith("search"):
@@ -82,6 +82,7 @@ class SearchType (object):
 
     @classmethod
     def fromdict (cls, ddict):
+        ddict = dict(ddict)
         st = ddict.pop("search_type")
 
         if not st == cls.__class__.__name__:
@@ -132,7 +133,7 @@ class PatternMatch (StringSearch):
             return ("%s NOT LIKE ?" % self.column, (st, ))
 
 try:
-    from util._search import AnagramMatch, SubanagramMatch
+    from util._search import AnagramMatchBase, SubanagramMatchBase
 except:
     class AnagramMatch (StringSearch):
         """
@@ -180,6 +181,40 @@ except:
                 return self.patternobj.try_word(word)
 
             return search_function
+else:
+    class AnagramMatch (AnagramMatchBase, StringSearch):
+        def as_dict (self):
+            return {"search_type": "AnagramMatch", "search_string": self.search_string, "negated": self.negated}
+
+        @classmethod
+        def from_dict (cls, my_dict):
+            my_dict = dict(my_dict)
+            my_dict.pop("search_type")
+            return cls(**my_dict)
+
+        def as_json (self):
+            return json.dumps(self.as_dict())
+
+        @classmethod
+        def from_json (cls, data):
+            return cls.from_dict(json.loads(data))
+
+    class SubanagramMatch (SubanagramMatchBase, StringSearch):
+        def as_dict (self):
+            return {"search_type": "SubanagramMatch", "search_string": self.search_string, "negated": self.negated}
+
+        @classmethod
+        def from_dict (cls, my_dict):
+            my_dict = dict(my_dict)
+            my_dict.pop("search_type")
+            return cls(**my_dict)
+
+        def as_json (self):
+            return json.dumps(self.as_dict())
+
+        @classmethod
+        def from_json (cls, data):
+            return cls.from_dict(json.loads(data))
 
 class TakesPrefix (StringSearch):
     """

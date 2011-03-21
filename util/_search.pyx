@@ -8,13 +8,13 @@ def alphagram (string):
     """
     return "".join(sorted(list(string.upper())))
 
-cdef class AnagramMatch (object):
+cdef class AnagramMatchBase (object):
     cdef object cpatternobj
     cdef object patternobj
-    cdef object search_string
-    cdef bint negated
+    cdef public object search_string
+    cdef public bint negated
 
-    def __init__ (AnagramMatch self, object search_string, bint negated = False):
+    def __init__ (AnagramMatchBase self, object search_string, bint negated = False):
         self.search_string = search_string
         self.negated = negated
 
@@ -39,8 +39,13 @@ cdef class AnagramMatch (object):
     cpdef object bounds (self):
         return self.patternobj.bounds()
 
-cdef class SubanagramMatch (object):
-    def __init__ (SubanagramMatch self, object search_string, bint negated = False):
+cdef class SubanagramMatchBase (object):
+    cdef object cpatternobj
+    cdef object patternobj
+    cdef public object search_string
+    cdef public bint negated
+
+    def __init__ (SubanagramMatchBase self, object search_string, bint negated = False):
         self.search_string = search_string
         self.negated = negated
 
@@ -59,4 +64,3 @@ cdef class SubanagramMatch (object):
 
     cpdef object bounds (self):
         return self.patternobj.bounds()
-
