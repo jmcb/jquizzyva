@@ -2,12 +2,6 @@ import util.pattern, util._pattern
 
 CALLBACK_FUNCTION = "callback"
 
-def alphagram (string):
-    """
-    This converts a string into an 'alphagram': an alphabetically sorted string.
-    """
-    return "".join(sorted(list(string.upper())))
-
 cdef class AnagramMatchBase (object):
     cdef object cpatternobj
     cdef object patternobj
@@ -19,12 +13,7 @@ cdef class AnagramMatchBase (object):
         self.negated = negated
 
     cpdef object clause (self):
-        if "?" in self.search_string or "[" in self.search_string or "*" in self.search_string:
-            return CALLBACK_FUNCTION
-
-        ag = alphagram(self.search_string)
-
-        return ("words.alphagram=?", (ag, ))
+        return CALLBACK_FUNCTION
 
     def pattern (self):
         if self.patternobj == None:
