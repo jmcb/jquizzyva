@@ -182,7 +182,14 @@ except:
 
             return search_function
 else:
-    class AnagramMatch (AnagramMatchBase, StringSearch):
+    class _AlphagramMatch (StringSearch):
+        def clause (self):
+
+            ag = alphagram(self.search_string)
+
+            return ("words.alphagram=?", (ag, ))
+
+    class _AnagramMatch (AnagramMatchBase, StringSearch):
         def as_dict (self):
             return {"search_type": "AnagramMatch", "search_string": self.search_string, "negated": self.negated}
 
@@ -198,6 +205,12 @@ else:
         @classmethod
         def from_json (cls, data):
             return cls.from_dict(json.loads(data))
+
+    def AnagramMatch (search_string, negated=False):
+        if "?" in search_string or "[" in search_string or "*" in search_string:
+            return _AnagramMatch(search_string=search_string, negated=negated)
+        else:
+            return _AlphagramMatch(search_string=search_string, negated=negated)
 
     class SubanagramMatch (SubanagramMatchBase, StringSearch):
         def as_dict (self):
