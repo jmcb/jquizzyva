@@ -7,6 +7,12 @@ import util.pattern
 
 CALLBACK_FUNCTION = "callback"
 
+class SearchError (Exception):
+    """
+    This error is raised whenever a search fails.
+    """
+    pass
+
 def alphagram (string):
     """
     This converts a string into an 'alphagram': an alphabetically sorted string.
@@ -268,8 +274,15 @@ class RangeSearch (SearchType):
 
         super(RangeSearch, self).__init__(*args, **kwargs)
 
-        self.search_range_start = search_range_start
-        self.search_range_stop = search_range_stop
+        try:
+            self.search_range_start = int(search_range_start)
+        except ValueError:
+            raise SearchError("%s is invalid start" % search_range_start)
+
+        try:
+            self.search_range_stop = int(search_range_stop)
+        except ValueError:
+            raise SearchError("%s is invalid stop" % search_range_stop)
 
     def clause (self):
         rt = self.search_range_start
