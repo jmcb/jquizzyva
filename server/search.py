@@ -30,7 +30,7 @@ def main (args, cgi_args):
     if lex is None:
         print json.dumps("Invalid lexicon '%s'" % lexicon)
 
-    search_term = util.search.SearchList.from_json(search_term)
+    search_term = util.search.SearchList.fromjson(search_term)
 
     result = lex.search(search_term, show_query=False)
 
