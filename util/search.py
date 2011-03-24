@@ -475,4 +475,4 @@ class SearchList (object):
 
     @classmethod
     def fromjson (cls, jsond):
-        return cls.fromdict(json.loads(jsond))
+        return cls.fromdicts(json.loads(jsond))
