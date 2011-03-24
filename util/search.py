@@ -189,22 +189,25 @@ else:
 
             return ("words.alphagram=?", (ag, ))
 
+        def asdict (self):
+            return {"search_type": "AnagramMatch", "search_string": self.search_string, "negated": self.negated}
+
     class _AnagramMatch (AnagramMatchBase, StringSearch):
-        def as_dict (self):
+        def asdict (self):
             return {"search_type": "AnagramMatch", "search_string": self.search_string, "negated": self.negated}
 
         @classmethod
-        def from_dict (cls, my_dict):
+        def fromdict (cls, my_dict):
             my_dict = dict(my_dict)
             my_dict.pop("search_type")
             return cls(**my_dict)
 
-        def as_json (self):
+        def asjson (self):
             return json.dumps(self.as_dict())
 
         @classmethod
-        def from_json (cls, data):
-            return cls.from_dict(json.loads(data))
+        def fromjson (cls, data):
+            return cls.fromdict(json.loads(data))
 
     def AnagramMatch (search_string, negated=False):
         if "?" in search_string or "[" in search_string or "*" in search_string:
