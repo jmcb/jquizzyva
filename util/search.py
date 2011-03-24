@@ -468,7 +468,10 @@ class SearchList (object):
 
     @classmethod
     def fromdicts (cls, items):
-        return cls(*[SearchType.fromdict(item) for item in items])
+        try:
+            return cls(*[SearchType.fromdict(item) for item in items])
+        except:
+            return cls(SearchType.fromdict(items))
 
     @classmethod
     def fromjson (cls, jsond):
