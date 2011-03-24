@@ -109,3 +109,9 @@ class Database (object):
 
 def csw ():
     return Database(util.config.LEXICONS["CSW"])
+
+def lexicon (lex):
+    if util.config.LEXICONS.has_key(lex):
+        return Database(util.config.LEXICONS[lex])
+
+    return None
