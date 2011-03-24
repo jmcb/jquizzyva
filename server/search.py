@@ -45,5 +45,5 @@ if __name__=="__main__":
     try:
         main (sys.argv, cgi.FieldStorage())
     except Exception, e:
-        print json.dumps({"exception_type": str(type(e)), "exception_message": str(e))
+        print json.dumps({"exception_type": str(type(e)), "exception_message": str(e)})
         
