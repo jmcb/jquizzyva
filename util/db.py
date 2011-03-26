@@ -87,7 +87,7 @@ class Database (object):
 
         return self.query(query, args)
 
-    def challenge (self, *words):
+    def challenge (self, words):
         query = "SELECT word FROM words WHERE " + " OR ".join(["word=?" for word in words])
         args = tuple(word.upper() for word in words)
 
