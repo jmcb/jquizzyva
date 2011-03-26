@@ -13,11 +13,6 @@ except ImportError:
 else:
     DO_MEMOIZE = False
 
-select_schema = ['alphagram', 'front_hooks', 'word', 'back_hooks', 'definition']
-
-def dict_factory (cursor, row):
-    return dict(zip(select_schema, row))
-
 class DatabaseNotFoundError (Exception):
     """
     This exception is raised when we attempt to connect to a database, but we
@@ -45,7 +40,6 @@ class Database (object):
         """
         if not self._connection:
             self._connection = sqlite3.connect(self.db)
-            self._connection.row_factory = dict_factory
 
         return self._connection
 
