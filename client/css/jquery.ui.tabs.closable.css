@@ -1,0 +1,28 @@
+.ui-tabs-nav a.ui-tabs-close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    cursor: pointer !important;
+    opacity: 0.4;
+    -moz-opacity: 0.4;
+    filter: alpha(opacity=40);
+}
+    
+.ui-tabs-nav .ui-tabs-selected a.ui-tabs-close {
+    z-index: 2;
+    opacity: 0.7;
+    -moz-opacity: 0.7;
+    filter: alpha(opacity=70);
+}
+
+.ui-tabs-nav a.ui-tabs-close {
+    height: 16px ;
+    width: 16px ;
+    padding: 0 !important;
+}
+
+.ui-tabs-nav a.ui-tabs-close:hover {
+    opacity: 1.0;
+    -moz-opacity: 1.0;
+    filter: alpha(opacity=100);
+}
