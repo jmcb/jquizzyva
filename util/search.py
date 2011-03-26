@@ -445,7 +445,7 @@ class SearchList (object):
     def query (self):
         args = []
         functions = {}
-        query = "SELECT word FROM words WHERE "
+        query = "SELECT alphagram, front_hooks, word, back_hooks, definition FROM words WHERE "
 
         maybe_query = None
 

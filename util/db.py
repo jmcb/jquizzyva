@@ -13,22 +13,10 @@ except ImportError:
 else:
     DO_MEMOIZE = False
 
-words_schema = ['word', 'length', 'playability', 'playability_order', 'min_playability_order','max_playability_order', 'combinations0', 'probability_order0', 'min_probability_order0', 'max_probability_order0', 'combinations1', 'probability_order1', 'min_probability_order1', 'max_probability_order1', 'combinations2', 'probability_order2', 'min_probability_order2', 'max_probability_order2', 'alphagram', 'num_anagrams', 'num_unique_letters', 'num_vowels', 'point_value', 'front_hooks', 'back_hooks', 'is_front_hook', 'is_back_hook', 'lexicon_symbols', 'definition']
-words_schema2 = ['word', 'length', 'alphagram', 'num_anagrams', 'num_unique_letters', 'num_vowels', 'point_value', 'front_hooks', 'back_hooks', 'is_front_hook', 'is_back_hook', 'lexicon_symbols', 'definition']
-
-words_schema_2 = words_schema[:2] + words_schema[18:]
+select_schema = ['alphagram', 'front_hooks', 'word', 'back_hooks', 'definition']
 
 def dict_factory (cursor, row):
-    """
-    Instead of relying on the information found in the cursor, we know that
-    we're only ever fetching information from the `words` table, to which we
-    have the exact specification in list format. Thus, zip that and the row
-    together and return it without any interaction with the cursor.
-    """
-    if len(row) != len(words_schema):
-        return dict(zip(words_schema2, row))
-    else:
-        return dict(zip(words_schema, row))
+    return dict(zip(select_schema, row))
 
 class DatabaseNotFoundError (Exception):
     """
