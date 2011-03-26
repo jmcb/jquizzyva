@@ -3,6 +3,7 @@
 import cgi
 import json
 import sys
+import traceback
 
 import util.search, util.db
 
@@ -45,5 +46,5 @@ if __name__=="__main__":
     try:
         main (sys.argv, cgi.FieldStorage())
     except Exception, e:
-        print json.dumps({"exception_type": e.__class__.__name__, "exception_message": str(e)})
+        print json.dumps({"exception_type": e.__class__.__name__, "exception_message": str(e), "exception_traceback": traceback.format_exc()})
         
