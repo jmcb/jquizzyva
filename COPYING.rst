@@ -29,4 +29,17 @@ Wikimedia Commons, by Matthew Fang. It is licensed under a CreativeCommons
 Attribution ShareAlike license. Likewise, this vector image
 (``util/jquivvyza.svg``) is licensed as CreativeCommons Attribution ShareAlike.
 
+---
+
+The jQuery `selectmenu`_ plug-in is dual-licensed under the terms of the MIT
+and GPL licenses.
+
+---
+
+The jQuery `flexigrid`_ plug-in is licensed under the terms of the MIT license.
+
+.. _`flexigrid`: http://code.google.com/p/flexigrid/
+
+.. _`Selectmenu`: https://github.com/fnagel/jquery-ui/wiki/Selectmenu
+
 .. _`Zyzzyva.jpg`: http://commons.wikimedia.org/wiki/File:Zyzzyva.jpg
