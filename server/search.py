@@ -13,8 +13,13 @@ def main (args, cgi_args):
     if search_term is None:
         search_term = cgi_args.getfirst("s", None)
 
-    if search_term is None:
-        print json.dumps("No search term provided.")
+    challenge_words = cgi_args.getfirst("words", None):
+    
+    if challenge_words is None:
+        challenge_words = cgi_args.getfirst("w", None)
+
+    if search_term is None and challenge_words is None:
+        print json.dumps("No search terms provided.")
         return
 
     lexicon = cgi_args.getfirst("lexicon", None)
@@ -31,11 +36,18 @@ def main (args, cgi_args):
     if lex is None:
         print json.dumps("Invalid lexicon '%s'" % lexicon)
 
-    search_term = util.search.SearchList.fromjson(search_term)
+    if search_term is not None:
+        search_term = util.search.SearchList.fromjson(search_term)
 
-    result = lex.search(search_term, show_query=False)
+        result = lex.search(search_term, show_query=False)
 
-    print json.dumps(result)    
+        print json.dumps(result)
+    else:
+        words = json.loads(challenge_words)
+
+        result = lex.challenge(*challenge_words)
+
+        print json.dumps(result)
 
 if __name__=="__main__":
     sys.stderr=sys.stdout
