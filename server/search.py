@@ -13,7 +13,7 @@ def main (args, cgi_args):
     if search_term is None:
         search_term = cgi_args.getfirst("s", None)
 
-    challenge_words = cgi_args.getfirst("words", None):
+    challenge_words = cgi_args.getfirst("words", None)
     
     if challenge_words is None:
         challenge_words = cgi_args.getfirst("w", None)
