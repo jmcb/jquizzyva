@@ -93,9 +93,9 @@ class Database (object):
 
         results = self.query(query, args)
         if len(results) != len(words):
-            return 0
+            return "no"
 
-        return 1
+        return "yes"
 
     connection = property(connect)
 
