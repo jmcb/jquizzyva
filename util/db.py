@@ -87,6 +87,16 @@ class Database (object):
 
         return self.query(query, args)
 
+    def challenge (self, *words):
+        query = "SELECT word FROM words WHERE " + " OR ".join(["word=?" for word in words])
+        args = tuple(word.upper() for word in words)
+
+        results = self.query(query, args)
+        if len(results) != len(words):
+            return 0
+
+        return 1
+
     connection = property(connect)
 
 def csw ():
