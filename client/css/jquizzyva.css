@@ -1,0 +1,64 @@
+.loading_div {
+    background: url(images/load2.gif) no-repeat center;
+}
+
+body {
+    height: 100%;
+}
+
+.ui-widget, p, div, span {
+    font-family: 'Helvetica', 'Verdana', sans-serif;
+}
+
+#button_bar {
+    padding: 10px 4px;
+}
+
+.flash_messages {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #ff0000;
+}
+
+#judge_pane {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.judge_pane_table {
+    table-layout: fixed;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.judge_pane_table_challenge {
+    height: 10%;
+}
+
+.judge_pane_table_words {
+    height: 80%;
+}
+
+.judge_pane_table_return {
+    height: 10%;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+.search_button_table {
+    width: 100%;
+}
+
+.search_submit_button {
+    width: 20%;
+}
+
+.search_flash_messages {
+    width: 80%;
+}
