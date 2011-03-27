@@ -43,7 +43,7 @@ def main (args, cgi_args):
 
         print json.dumps(result)
     else:
-        words = json.loads(challenge_words)
+        words = set(json.loads(challenge_words))
 
         result = lex.challenge(words)
 
