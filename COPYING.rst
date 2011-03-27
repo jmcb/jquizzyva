@@ -42,6 +42,14 @@ The jQuery `flexigrid`_ plug-in is licensed under the terms of the MIT license.
 
 `Closable Tabs`_ extension of a non-specific license.
 
+---
+
+The jQuery `timers`_ plug-in is licensed under the terms of the `WTFPL`_ license.
+
+.. _`timers`: http://plugins.jquery.com/files/jquery.timers-1.2.js.txt
+
+.. _`WTFPL`: http://sam.zoy.org/wtfpl/
+
 .. _`Closable Tabs`: http://flavoriffic.blogspot.com/2008/05/jquery-ui-and-closable-tabs.html
 
 .. _`flexigrid`: http://code.google.com/p/flexigrid/
