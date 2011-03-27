@@ -25,6 +25,7 @@
                     prompt_mode: false,
                     challenge_mode: false,
                     challenge_count: 0,
+                    loading: false,
                 }
 
                 var row_elements = function (row)
@@ -131,6 +132,8 @@
                     }); 
                     $("#do_search", $(this_pane)).button({icons: {primary: "ui-icon-search"}}).click(function()
                         {
+                            var progress = $("<div>").text("Searching, please wait...").dialog({modal: true}).dialog("open");
+
                             var result = []
                             var validate_failed = false;
                             $(".search_components", this_pane).each(function()
@@ -151,6 +154,8 @@
 
                             $.post("http://wxwhatever.com/cgi-bin/search.json?", data, function(data)
                                 {
+                                    progress.dialog("close");
+
                                     var results = {total: data.length, page: 1, rows: []}
                                     $.each(data, function(index) {
                                         results.rows.push({cell: this});
@@ -170,9 +175,8 @@
 
                             $(document).ajaxError(function (e, xhr, settings, exception)
                             {
-
-                            alert('Error in: ' + settings.url + ' \n' + 'error:\n' + xhr.responseText);
-
+                                progress.dialog("close");
+                                $("div").text("Error in: " + settings.url + ' \n' + 'error:\n' + xhr.responseText).dialog().dialog("open");
                             });
 
                             return false;
@@ -278,6 +282,7 @@
                     tabs.prompt_mode = false;
                     tabs.challenge_mode = false;
                     tabs.challenge_count = 0;
+                    tabs.loading = false;
 
                     $("body").children().hide()
                     $("#judge_pane").show();
@@ -296,6 +301,8 @@
                     {
                         $("#judge_entry").empty();
                         $("#judge_message").html("Challenger: How many words would you like to challenge?");
+                        tabs.prompt_mode = false;
+                        tabs.challenge_mode = false;
                     }
 
                     var do_prompt = function()
@@ -304,8 +311,8 @@
                         tabs.challenge_mode = false;
                         var count = parseInt($("#judge_entry").html());
                         tabs.challenge_count = count;
-                        $("#judge_message").html("1. Enter your word" + ((count != 1) ? "s, separated with SPACE or ENTER." : "."));
-                        $("#judge_message").append("<br />").append("2. Press TAB to challenge.");
+                        $("#judge_message").html("1. Enter your word" + ((count != 1) ? "s, separated with COMMA." : "."));
+                        $("#judge_message").append("<br />").append("2. Press TAB or ENTER to challenge.");
                         $("#judge_entry").html("");
                     }
 
@@ -313,8 +320,9 @@
                     {
                         tabs.prompt_mode = false;
                         tabs.challenge_mode = true;
+                        tabs.loading = true;
                         var words = []
-                        $.each($("#judge_entry").html().split("<br>"), function()
+                        $.each($("#judge_entry").html().split(","), function()
                             {
                                 if (this.trim() != "")
                                     words.push(this.trim());
@@ -322,21 +330,26 @@
 
                         var data = {"w": JSON.stringify(words), "l": "CSW"};
 
+                        $("#judge_entry").empty().addClass("loading_div");
+
                         $.post("http://wxwhatever.com/cgi-bin/search.json?", data, function(data)
                             {
-                                if (data == "yes")
-                                    $("#judge_entry").empty().append("<span>").css("color", "#00ff00").html("Yes, the play " + words.join(", ") + " is acceptable!");
-                                else
-                                    $("#judge_entry").empty().append("<span>").css("color", "#ff0000").html("No. " + words.join(", ") + " is not acceptable!");
+                                tabs.loading = false;
 
-                                setTimeout(reset_func, 5000);
+                                $("#judge_entry").removeClass("loading_div")
+                                if (data == "yes")
+                                    $("#judge_entry").empty().append($("<span>").css("color", "#00ff00").html("Yes, the play " + words.join(", ") + " is acceptable!"));
+                                else
+                                    $("#judge_entry").empty().append($("<span>").css("color", "#ff0000").html("No. " + words.join(", ") + " is not acceptable!"));
+
+                                $("#judge_entry").oneTime(5000, "reset", reset_func);
                             });
 
                         $(document).ajaxError(function (e, xhr, settings, exception)
                         {
-
-                            alert('Error in: ' + settings.url + ' \n' + 'error:\n' + xhr.responseText);
-
+                            tabs.loading = false;
+                            $("#judge_entry").removeClass("loading_div")
+                            $("<div>").text('Error in: ' + settings.url + ' \n' + 'error:\n' + xhr.responseText).dialog().dialog("open");
                         });
                     }
 
@@ -357,6 +370,9 @@
                         if ("1234567890".indexOf(keys) != -1)
                         {
                             $("#judge_entry").append(keys);
+                            $("#judge_entry").stopTime();
+                            $("#judge_entry").oneTime(2500, do_prompt);
+                            return false;
                         }
                         }).keydown(
                     function(event)
@@ -368,10 +384,18 @@
                         if (event.which == 8)
                         {
                             $("#judge_entry").html(cur_cont.substr(0, cur_cont.length - 1));
+                            return false;
                         }
                         else if (event.which == 13)
                         {
+                            var count = parseInt($("#judge_entry").html());
+                            if (!count)
+                                return false;
+
+                            $("#judge_entry").stopTime();
+
                             do_prompt();
+                            return false;
                         }
                     }).keypress(function(event)
                     {
@@ -382,6 +406,17 @@
                         if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(keys) != -1)
                         {
                             $("#judge_entry").append(keys);
+                            return false;
+                        }
+                        else if (event.which == 44)
+                        {
+                            if (tabs.challenge_count <= 1)
+                                return false;
+                            
+                            tabs.challenge_count--;
+
+                            $("#judge_entry").append(", ");
+                            return false;
                         }
                     }).keydown(
                     function(event)
@@ -391,26 +426,27 @@
 
                         var cur_cont = $("#judge_entry").html();
 
-                        if (event.which == 44 || event.which == 13 || event.which == 32)
+                        if (event.which == 8)
                         {
-                            if (tabs.challenge_count == 0)
-                                return false;
-                            
-                            tabs.challenge_count--;
+                            if ($("#judge_entry").text().substr(-1) == ",")
+                                tabs.challenge_count++;
 
-                            $("#judge_entry").append("<br />");
-                        }
-                        else if (event.which == 8)
-                        {
                             $("#judge_entry").html(cur_cont.substr(0, cur_cont.length - 1));
+                            return false;
                         }
                         else if (event.which == 9)
                         {
                             do_challenge();
+                            return false;
                         }
+                    }).keypress(function(event)
+                    {
+                        if (!tabs.judge_mode || !tabs.challenge_mode || tabs.loading)
+                            return;
+
+                        $("#judge_entry").stopTime();
+                        reset_func();
                     });
-
-
                 });
 
                 $("#load_button").button({icons: {primary: "ui-icon-folder-open"}});
