@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>   
+        <link rel="shortcut icon" href="http://wxwhatever.com/jquizzyva/favicon.ico" />
         <link rel="Stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/black-tie/jquery-ui.css">
         <link href="css/flexigrid.css" type="text/css" rel="Stylesheet">
         <link href="css/jquery.ui.selectmenu.css" type="text/css" rel="Stylesheet">
@@ -10,6 +11,7 @@
         <script type="text/javascript" src="js/jquery.ui.selectmenu.js"></script>
         <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/jquery.ui.tabs.closable.js"></script>
+        <script type="text/javascript" src="js/jquery.timers.js"></script>
         <style>
         body {
             height: 100%;
@@ -165,7 +167,7 @@
                 {
                     tabs.search_tabs++;
                     var this_pane = "#search_pane" + tabs.search_tabs;
-                    $("#tabs").tabs("add", this_pane, "Search");
+                    $("#tabs").tabs("add", this_pane, "Search&nbsp;&nbsp;");
                     $(this_pane).append($("#search_pane").children().clone());
                     $(".results_grid", $(this_pane)).flexigrid({
                         height:'auto',
@@ -325,7 +327,7 @@
                 {
                     tabs.quiz_tabs++;
                     var this_pane = "#quiz_pane" + tabs.quiz_tabs;
-                    $("#tabs").tabs("add", this_pane, "Quiz");
+                    $("#tabs").tabs("add", this_pane, "Quiz&nbsp;&nbsp;");
                     $(this_pane).append($("#quiz_pane").children().clone());
                     $("#tabs").tabs("select", $("#tabs").tabs("length") - 1);
                 });
