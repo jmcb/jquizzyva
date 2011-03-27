@@ -1,7 +1,7 @@
 .ui-tabs-nav a.ui-tabs-close {
     position: absolute;
     top: 2px;
-    right: 2px;
+    right: 3px;
     cursor: pointer !important;
     opacity: 0.4;
     -moz-opacity: 0.4;
@@ -16,8 +16,8 @@
 }
 
 .ui-tabs-nav a.ui-tabs-close {
-    height: 16px ;
-    width: 16px ;
+    height: 18px ;
+    width: 18px ;
     padding: 0 !important;
 }
 
