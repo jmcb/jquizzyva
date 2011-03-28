@@ -42,8 +42,10 @@
 				.addClass(wrapperClasses)
 				.hover(function(){
 					self.fileButton.addClass(hoverClasses);
+                    self.fileButton.css("cursor", "pointer");
 				},function(){
 					self.fileButton.removeClass(stateClasses);
+                    self.fileButton.css("cursor", "pointer");
 				}).bind('mousemove.fileinput',function(e){
 					var x = (e.pageX - $(this).offset().left) - (self.fileFile.width() / 1.2);
 					var y = (e.pageY - $(this).offset().top) - (self.fileFile.height() / 2);
@@ -62,7 +64,6 @@
 				.insertBefore(self.fileFile),
 			self.fileButton = $('<button>'+options.buttonText+'</button>').button(options.buttonOptions)
 				.insertAfter(self.fileInput)
-            self.fileButton.innerHeight(self.fileButton.innerHeight()+1);
 
 			self.fileFile.bind('change.fileinput mouseout.fileinput',function(){
 				self.fileInput.text(self._getText());
@@ -114,9 +115,6 @@
 			switch(option){
 				case "buttonText":
 					self.fileButtonText.text(value);
-					break;
-				case "inputText":
-					self.fileInput.text(self._getText());
 					break;
 			}
 		}

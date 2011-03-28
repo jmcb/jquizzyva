@@ -7,6 +7,10 @@
     margin-right: auto;
 }
 
+.load_button_td, .fileinput-input, .fileinput-wrapper, #load_button {
+    cursor: pointer;
+}
+
 .spacer {
     width: 0.5em;
 }

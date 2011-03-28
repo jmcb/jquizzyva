@@ -18,7 +18,7 @@
 /*
  * DO NOT MODIFY
  */
-.fileinput-wrapper {position:relative;display:inline-block;zoom:1;*display:inline;overflow:hidden;padding-top:0.15em;}
+.fileinput-wrapper {position:relative;}
 .fileinput-file {position:absolute;left:-9999px;-moz-opacity:0;filter:alpha(opacity=0);opacity:0;padding:0;}
 
 /*
