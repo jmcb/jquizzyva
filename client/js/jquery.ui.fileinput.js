@@ -15,7 +15,116 @@
  * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function(b){b.widget("shimmy.fileinput",{options:{buttonText:"Browse",inputText:""},_create:function(){var a=this,d=a.options;a.fileFile=a.element;a.fileWrapper=b("<div></div>").addClass("fileinput-wrapper ui-widget").hover(function(){a.fileButton.addClass("ui-state-hover")},function(){a.fileButton.removeClass("ui-state-hover ui-state-active")}).bind("mousemove.fileinput",function(c){var e=c.pageX-b(this).offset().left-a.fileFile.width()/1.2;c=c.pageY-b(this).offset().top-a.fileFile.height()/2;a.fileFile.css("top",
-c).css("left",e)}).bind("mousedown.fileinput",function(){a.fileButton.addClass("ui-state-active")}).bind("mouseup.fileinput",function(){a.fileButton.removeClass("ui-state-active")});a.fileFile.addClass("fileinput-file").wrap(a.fileWrapper);a.fileInput=b("<span></span>").addClass("fileinput-input ui-state-default ui-widget-content ui-corner-left").text(a._getText()).insertBefore(a.fileFile);a.fileButtonText=b("<span></span>").addClass("fileinput-button-text").text(d.buttonText);a.fileButton=b("<span></span>").addClass("fileinput-button ui-state-default ui-widget-header ui-corner-right").insertAfter(a.fileInput).html(a.fileButtonText);
-a.fileFile.bind("change.fileinput mouseout.fileinput",function(){a.fileInput.text(a._getText())}).bind("focusin.fileinput",function(){a.fileButton.addClass("ui-state-hover")}).bind("focusout.fileinput",function(){a.fileButton.removeClass("ui-state-hover")})},_getText:function(){fileValue=this.getValue();inputTextValue=this.options.inputText;return fileValue==""?inputTextValue:fileValue},getValue:function(){return fileValue=this.fileFile.val().replace("C:\\fakepath\\","")},reset:function(){this.fileInput.text(this.options.inputText)},
-destroy:function(){this.fileInput.remove();this.fileButton.remove();this.fileButtonText.remove();this.fileFile.removeClass("fileinput-file").unwrap(this.fileWrapper);this.fileWrapper.remove();b.Widget.prototype.destroy.call(this)},_setOption:function(a,d){b.Widget.prototype._setOption.apply(this,arguments);switch(a){case "buttonText":this.fileButtonText.text(d);break;case "inputText":this.fileInput.text(this._getText())}}})})(jQuery);
+(function($){
+
+	var wrapperClasses = 'fileinput-wrapper ui-widget',
+		inputClasses = 'fileinput-input ui-state-default ui-widget-content ui-corner-left',
+		buttonClasses = 'fileinput-button ui-state-default ui-widget-header ui-corner-right',
+		buttonTextClasses = 'fileinput-button-text',
+		fileClasses = 'fileinput-file',
+		hoverClasses = 'ui-state-hover',
+		activeClasses = 'ui-state-active',
+		stateClasses = hoverClasses + ' ' + activeClasses,
+		fakePath = 'C:\\fakepath\\';
+
+	$.widget("shimmy.fileinput", {
+		options: {
+			buttonText: "Browse",
+			inputText: ""
+		},
+
+		_create: function(){
+			var self = this,
+				options = self.options;
+
+			self.fileFile = self.element,
+			self.fileWrapper = $('<div></div>')
+				.addClass(wrapperClasses)
+				.hover(function(){
+					self.fileButton.addClass(hoverClasses);
+				},function(){
+					self.fileButton.removeClass(stateClasses);
+				}).bind('mousemove.fileinput',function(e){
+					var x = (e.pageX - $(this).offset().left) - (self.fileFile.width() / 1.2);
+					var y = (e.pageY - $(this).offset().top) - (self.fileFile.height() / 2);
+					self.fileFile.css('top', y).css('left', x);
+				}).bind('mousedown.fileinput',function(e){
+					self.fileButton.addClass(activeClasses);
+				}).bind('mouseup.fileinput',function(e){
+					self.fileButton.removeClass(activeClasses);
+				}),
+			self.fileFile
+				.addClass(fileClasses)
+				.wrap(self.fileWrapper),
+			self.fileInput = $('<span></span>')
+				.addClass(inputClasses)
+				.text(self._getText())
+				.insertBefore(self.fileFile),
+			self.fileButtonText = $('<span></span>')
+				.addClass(buttonTextClasses)
+				.text(options.buttonText)
+			self.fileButton = $('<span></span>')
+				.addClass(buttonClasses)
+				.insertAfter(self.fileInput)
+				.html(self.fileButtonText);
+
+			self.fileFile.bind('change.fileinput mouseout.fileinput',function(){
+				self.fileInput.text(self._getText());
+			}).bind('focusin.fileinput',function(){
+				self.fileButton.addClass(hoverClasses);
+			}).bind('focusout.fileinput',function(){
+				self.fileButton.removeClass(hoverClasses);
+			});
+
+		},
+
+		_getText: function(){
+			var self = this;
+			fileValue = self.getValue();
+			inputTextValue = self.options.inputText;
+
+			if(fileValue == ''){
+				return inputTextValue;
+			}else{
+				return fileValue;
+			}
+		},
+
+		getValue: function(){
+			var self = this;
+			return fileValue = self.fileFile.val().replace(fakePath,'');
+		},
+
+		reset: function() {
+			var self = this;
+			self.fileInput.text(self.options.inputText);
+		},
+
+		destroy: function(){
+			var self = this;
+
+			self.fileInput.remove();
+			self.fileButton.remove();
+			self.fileButtonText.remove();
+			self.fileFile.removeClass(fileClasses).unwrap(self.fileWrapper);
+			self.fileWrapper.remove();
+
+			$.Widget.prototype.destroy.call( self );
+		},
+
+		_setOption: function(option, value){
+			var self = this;
+			$.Widget.prototype._setOption.apply( self, arguments );
+			switch(option){
+				case "buttonText":
+					self.fileButtonText.text(value);
+					break;
+				case "inputText":
+					self.fileInput.text(self._getText());
+					break;
+			}
+		}
+
+	});
+
+})(jQuery);
