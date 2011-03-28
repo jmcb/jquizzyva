@@ -1,3 +1,7 @@
+.jquiz_dialog {
+    text-align: center;
+}
+
 .loading_div {
     background: url(images/load2.gif) no-repeat center;
     width: 50px;
@@ -17,10 +21,6 @@
 
 .button_table button, .button_table span {
     vertical-align: center;
-}
-
-.fileinput-input {
-    display: none;
 }
 
 body {
