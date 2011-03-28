@@ -6,6 +6,7 @@
         <link href="css/jquery.ui.selectmenu.css" type="text/css" rel="Stylesheet">
         <link href="css/jquery.ui.tabs.closable.css" type="text/css" rel="Stylesheet">
         <link href="css/jquizzyva.css" type="text/css" rel="Stylesheet">
+        <link href="css/jquery.ui.fileinput.css" type="text/css" rel="Stylesheet">
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/flexigrid.js"></script>
@@ -13,6 +14,7 @@
         <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/jquery.ui.tabs.closable.js"></script>
         <script type="text/javascript" src="js/jquery.timers.js"></script>
+        <script type="text/javascript" src="js/jquery.ui.fileinput.js"></script>
         <style>
         </style>
         <script type="text/javascript">
@@ -449,7 +451,7 @@
                     });
                 });
 
-                $("#load_button").button({icons: {primary: "ui-icon-folder-open"}});
+                $("#load_button").fileinput({buttonText: "Load", buttonOptions: {icons: {primary: "ui-icon-folder-open"}}});
                 $("#save_button").button({icons: {primary: "ui-icon-disk"}});
                 $("#return_button").button();
                 });
@@ -457,13 +459,30 @@
         <title>jQuizzyva!</title>
     </head><body>
         <div id="button_bar">
-            <button id="load_button">Load</button>
-            <button id="save_button">Save</button>
-            <span>&nbsp;&nbsp;</span>
-            <button id="search_button">Search</button>
-            <button id="quiz_button">Quiz</button>
-            <span>&nbsp;&nbsp;</span>
-            <button id="judge_button">Word Judge</button>
+            <table>
+                <tr>
+                    <td>
+                        <input type="file" id="load_button" />
+                    </td>
+                    <td>
+                        <button id="save_button">Save</button>
+                    </td>
+                    <td>
+                        <span>&nbsp;&nbsp;</span>
+                    </td>
+                    <td>
+                        <button id="search_button">Search</button>
+                    </td>
+                    <td>
+                        <button id="quiz_button">Quiz</button>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <button id="judge_button">Word Judge</button>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div id="tabs">
             <ul>

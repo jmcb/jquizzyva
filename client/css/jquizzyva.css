@@ -1,5 +1,22 @@
 .loading_div {
     background: url(images/load2.gif) no-repeat center;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spacer {
+    width: 0.5em;
+}
+
+.button_table button, .button_table span {
+    vertical-align: center;
+}
+
+.fileinput-input {
+    display: none;
 }
 
 body {
