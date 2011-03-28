@@ -46,6 +46,14 @@ The jQuery `flexigrid`_ plug-in is licensed under the terms of the MIT license.
 
 The jQuery `timers`_ plug-in is licensed under the terms of the `WTFPL`_ license.
 
+---
+
+The jQuery `fileinput`_ plug-in is licensed under the terms of the GNU Public
+License. My alterations to it, like the rest of this code, are licensed under
+the terms of the above MIT license.
+
+.. _`fileinput`: http://plugins.jquery.com/project/fileinput
+
 .. _`timers`: http://plugins.jquery.com/files/jquery.timers-1.2.js.txt
 
 .. _`WTFPL`: http://sam.zoy.org/wtfpl/
