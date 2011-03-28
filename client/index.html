@@ -30,6 +30,12 @@
                     loading: false,
                 }
 
+                var dialog = function (text, no_load)
+                {
+                    var dia = $("<div>").append($("<p>").text(text)).append($("<p>").addClass((no_load) ? "" : "loading_div").html("&nbsp;")).addClass("jquiz_dialog").dialog().dialog("open");
+                    return dia;
+                }
+
                 var row_elements = function (row)
                 {
                     var search_type = $(".search_types", row).val();
@@ -134,7 +140,7 @@
                     }); 
                     $("#do_search", $(this_pane)).button({icons: {primary: "ui-icon-search"}}).click(function()
                         {
-                            var progress = $("<div>").text("Searching, please wait...").dialog({modal: true}).dialog("open");
+                            var progress = dialog("Searching, please wait...");
 
                             var result = []
                             var validate_failed = false;
@@ -178,7 +184,7 @@
                             $(document).ajaxError(function (e, xhr, settings, exception)
                             {
                                 progress.dialog("close");
-                                $("div").text("Error in: " + settings.url + ' \n' + 'error:\n' + xhr.responseText).dialog().dialog("open");
+                                dialog("Error in: " + settings.url + ' \n' + 'error:\n' + xhr.responseText, true);
                             });
 
                             return false;
@@ -351,7 +357,7 @@
                         {
                             tabs.loading = false;
                             $("#judge_entry").removeClass("loading_div")
-                            $("<div>").text('Error in: ' + settings.url + ' \n' + 'error:\n' + xhr.responseText).dialog().dialog("open");
+                            dialog('Error in: ' + settings.url + ' \n' + 'error:\n' + xhr.responseText, true);
                         });
                     }
 
@@ -451,7 +457,7 @@
                     });
                 });
 
-                $("#load_button").fileinput({buttonText: "Load", buttonOptions: {icons: {primary: "ui-icon-folder-open"}}});
+                $("#load_button").button({icons: {primary: "ui-icon-folder-open"}});
                 $("#save_button").button({icons: {primary: "ui-icon-disk"}});
                 $("#return_button").button();
                 });
@@ -462,7 +468,7 @@
             <table class="button_table">
                 <tr>
                     <td class="load_button_td">
-                        <input type="file" id="load_button" />
+                        <button id="load_button">Load</button>
                     </td>
                     <td class="save_button_td">
                         <button id="save_button">Save</button>
