@@ -8,14 +8,14 @@ import traceback
 
 import util.search, util.db, util.load, util.save
 
-def json ():
+def jsond ():
     print "Content-type: application/json"
     print
 
 def jsonw (f):
     @functools.wraps(f)
     def jsonw (*args, **kwargs):
-        json()
+        jsond()
         f(*args, **kargs)
 
     return jsonw
@@ -76,7 +76,7 @@ def save (args, cgi_args, lexicon):
 
 def main (args, cgi_args):
     if not (cgi_args.has_key("s") or cgi_args.has_key("w") or cgi_args.has_key("v") or cgi_args.has_key("d")):
-        json()
+        jsond()
         print json.dumps("No search terms provided.")
         return
 
@@ -86,14 +86,14 @@ def main (args, cgi_args):
         lexicon = cgi_args.getfirst("l", None)
 
     if lexicon is None:
-        json()
+        jsond()
         print json.dumps("No lexicon provided.")
         return
 
     lex = util.db.lexicon(lexicon)
 
     if lex is None:
-        json()
+        jsond()
         print json.dumps("Invalid lexicon '%s'" % lexicon)
 
     if cgi_args.has_key("d"):
@@ -105,7 +105,7 @@ def main (args, cgi_args):
     elif cgi_args.has_key("w"):
         return challenge(args, cgi_args, lexicon)
     else:
-        json()
+        jsond()
         print json.dumps("Nothing.")
 
 if __name__=="__main__":
@@ -114,7 +114,7 @@ if __name__=="__main__":
     try:
         main (sys.argv, cgi.FieldStorage())
     except Exception, e:
-        json()
+        jsond()
 
         print json.dumps({"exception_type": e.__class__.__name__, "exception_message": str(e)})
         
