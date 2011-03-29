@@ -18,7 +18,7 @@ def jsonw (f):
         json()
         f(*args, **kargs)
 
-    return jsown
+    return jsonw
 
 def xml (fn):
     print """Content-type: application/xml; name='%s'""" % fn
