@@ -407,10 +407,16 @@ class ConsistsOf (StringSearch, RangeSearch):
 class StringListSearch (SearchType):
     search_string_list = None
 
-    def __init__ (self, search_string_list=None, *args, **kwargs):
+    def __init__ (self, search_string_list=None, search_string=None, *args, **kwargs):
         super(StringListSearch, self).__init__(*args, **kwargs)
 
         self.search_string_list = search_string_list
+
+        if self.search_string_list is None:
+            self.search_string_list = []
+
+        if search_string is not None:
+            self.search_string_list.extend(search_string)
 
     def __repr__ (self):
         return "<%s search_string_list:%s>" % (self.__class__.__name__, self.search_string_list)
