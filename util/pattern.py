@@ -13,7 +13,7 @@ except ImportError:
     try_word = None
     CPattern = None
 
-class Pattern (object):
+class AnagramPattern (object):
     """
     A pattern consists primarily of a series of letters, placeholders,
     wildcards and sets of characters, which represents a variety of possible
@@ -56,7 +56,7 @@ class Pattern (object):
             fully meeting the pattern criteria.
         """
 
-        super(Pattern, self).__init__()
+        super(AnagramPattern, self).__init__()
 
         self.sets = []
         self.letters = []
@@ -246,7 +246,7 @@ class Pattern (object):
     def __repr__ (self):
         return "<%s '%s' wildcard=%s blanks=%s sets=%s letters=%s>" % (self.__class__.__name__, self.pattern, self.wildcard, self.blanks, self.sets, self.letters)
 
-class SubPattern (Pattern):
+class SubAnagramPattern (AnagramPattern):
     """
     This pattern is a convenience subclass of Pattern; the usage,
     initialisation, etc, are identical to Pattern, but it automatically sets
@@ -263,4 +263,4 @@ class SubPattern (Pattern):
         :param subanagram: Ignored.
         """
 
-        super(SubPattern, self).__init__(subanagram=True)
+        super(SubAnagramPattern, self).__init__(subanagram=True)
