@@ -351,6 +351,9 @@ class RangeSearch (SearchType):
         except ValueError:
             raise SearchError("%s is invalid stop" % search_range_stop)
 
+        if self.search_range_stop < self.search_range_start:
+            self.search_range_stop = self.search_range_start
+
     def clause (self):
         rt = self.search_range_start
         rp = self.search_range_stop
