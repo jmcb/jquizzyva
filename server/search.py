@@ -11,9 +11,9 @@ def json ():
     print "Content-type: application/json"
     print
 
-def xml ():
-    print "Content-type: application/xml"
-    print
+def xml (fn):
+    print """Content-type: application/xml; name='%s'""" % fn
+    print """Content-disposition: attachment; filename='%s'""" % fn
 
 def main (args, cgi_args):
 
