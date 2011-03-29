@@ -471,6 +471,8 @@ class SearchList (object):
         if "words.length" not in query and maybe_query:
             query += " AND " + maybe_query
 
+        query += " LIMIT 100"
+
         return (query, args, functions)
 
     def __repr__ (self):
