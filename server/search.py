@@ -16,7 +16,7 @@ def jsonw (f):
     @functools.wraps(f)
     def jsonw (*args, **kwargs):
         jsond()
-        f(*args, **kargs)
+        f(*args, **kwargs)
 
     return jsonw
 
