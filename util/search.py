@@ -304,14 +304,20 @@ class TakesPrefix (StringSearch):
     This is a limiting search that ensures that the words returned are only
     words which take a specific prefix.
     """
-    pass
+    column = "words.word"
+
+    def clause (self):
+        return ("?||words.word IN (SELECT word AS pos_word FROM words WHERE pos_word=?||MYWORD)", (self.search_string, self.search_string))
 
 class TakesSuffix (StringSearch):
     """
     As per TakesPrefix, only apply to words which take a specific suffix
     instead.
     """
-    pass
+    column = "words.word"
+
+    def clause (self):
+        return ("words.word||? IN (SELECT word AS pos_word FROM words WHERE pos_word=MYWORD||?)", (self.search_string, self.search_string))
 
 class RangeSearch (SearchType):
     """
@@ -506,7 +512,7 @@ class SearchList (object):
     def query (self):
         args = []
         functions = {}
-        query = "SELECT alphagram, front_hooks, word, back_hooks, definition FROM words WHERE "
+        query = "SELECT alphagram, front_hooks, word as MYWORD, back_hooks, definition FROM words WHERE "
 
         maybe_query = None
 
