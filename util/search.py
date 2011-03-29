@@ -163,6 +163,7 @@ except:
         """
 
         patternobj = None
+        column = "words.alphagram"
 
         def clause (self):
             if "?" in self.search_string or "[" in self.search_string or "*" in self.search_string:
@@ -204,6 +205,8 @@ except:
             return search_function
 else:
     class _SimplePatternMatch (StringSearch):
+        column = "words.word"
+
         def clause (self):
             st = self.search_string.replace("?", ".").replace("*", ".*")
 
@@ -216,6 +219,8 @@ else:
             return {"search_type": "PatternMatch", "search_string": self.search_string, "negated": self.negated}
 
     class _PatternMatch (PatternMatchBase, StringSearch):
+        column = "words.word"
+
         def asdict (self):
             return {"search_type": "PatternMatch", "search_string": self.search_string, "negated": self.negated}
 
@@ -233,12 +238,14 @@ else:
             return cls.fromdict(json.loads(data))
 
     def PatternMatch (search_string, negated=False):
-        if "[" in search_string search_string:
+        if "[" in search_string:
             return _PatternMatch(search_string=search_string, negated=negated)
         else:
             return _SimplePatternMatch(search_string=search_string, negated=negated)
 
     class _AlphagramMatch (StringSearch):
+        column = "words.alphagram"
+
         def clause (self):
 
             ag = alphagram(self.search_string)
@@ -249,6 +256,8 @@ else:
             return {"search_type": "AnagramMatch", "search_string": self.search_string, "negated": self.negated}
 
     class _AnagramMatch (AnagramMatchBase, StringSearch):
+        column = "words.alphagram"
+
         def asdict (self):
             return {"search_type": "AnagramMatch", "search_string": self.search_string, "negated": self.negated}
 
@@ -272,6 +281,8 @@ else:
             return _AlphagramMatch(search_string=search_string, negated=negated)
 
     class SubanagramMatch (SubanagramMatchBase, StringSearch):
+        column = "words.alphagram"
+
         def as_dict (self):
             return {"search_type": "SubanagramMatch", "search_string": self.search_string, "negated": self.negated}
 
@@ -504,7 +515,7 @@ class SearchList (object):
                 squery, subargs = constraint.clause()
             except ValueError:
                 ind = len(functions)+1
-                squery = "anagrammer%s(words.alphagram)" % ind
+                squery = "anagrammer%s(%s)" % (ind, constraint.column)
                 subargs = []
                 functions["anagrammer%s" % ind] = constraint.pattern()
                 bounds = constraint.bounds()

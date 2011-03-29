@@ -271,8 +271,8 @@ class Pattern (AnagramPattern):
     """
     _regexp = None
 
-    def __init__ (self):
-        super(Pattern, self).__init__()
+    def __init__ (self, subanagram=False):
+        super(Pattern, self).__init__(subanagram=False)
 
     def as_regexp (self):
         if self._regexp is not None:
