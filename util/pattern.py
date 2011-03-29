@@ -8,10 +8,10 @@ SET_FINDER = re.compile("\[(\^?:?[A-Z]+)\]")
 MAX_WORD_LENGTH = 16
 
 try:
-    from util._pattern import try_word, CPattern
+    from util._pattern import try_word, CAnagramPattern
 except ImportError:
     try_word = None
-    CPattern = None
+    CAnagramPattern = None
 
 class AnagramPattern (object):
     """
@@ -152,10 +152,10 @@ class AnagramPattern (object):
         if self.cpattern is not None:
             return self.cpattern
 
-        if CPattern is None:
+        if CAnagramPattern is None:
             return None
 
-        self.cpattern = CPattern(self.blanks, self.length, len(self.letters), [ord(l) for l in self.letters], len(self.sets), [[ord(l) for l in s] for s in self.sets], len(self.neg_sets), [[ord(l) for l in s] for s in self.neg_sets], self.subanagram, self.wildcard)
+        self.cpattern = CAnagramPattern(self.blanks, self.length, len(self.letters), [ord(l) for l in self.letters], len(self.sets), [[ord(l) for l in s] for s in self.sets], len(self.neg_sets), [[ord(l) for l in s] for s in self.neg_sets], self.subanagram, self.wildcard)
 
         return self.cpattern
 

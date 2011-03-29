@@ -159,7 +159,7 @@ except:
 
         def pattern (self):
             if self.patternobj == None:
-                self.patternobj = util.pattern.Pattern.fromstring(self.search_string)
+                self.patternobj = util.pattern.AnagramPattern.fromstring(self.search_string)
 
             def search_function (word):
                 return self.patternobj.try_word(word)
@@ -181,7 +181,7 @@ except:
 
         def pattern (self):
             if self.patternobj == None:
-                self.patternobj = util.pattern.SubPattern.fromstring(self.search_string)
+                self.patternobj = util.pattern.SubAnagramPattern.fromstring(self.search_string)
 
             def search_function (word):
                 return self.patternobj.try_word(word)
