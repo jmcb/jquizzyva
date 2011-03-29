@@ -33,7 +33,7 @@ def search (args, cgi_args, lexicon):
 
     search_term = util.search.SearchList.fromjson(search_term)
 
-    result = lex.search(search_term, show_query=False)
+    result = lexicon.search(search_term, show_query=False)
 
     print json.dumps(result)
 
@@ -46,7 +46,7 @@ def challenge (args, cgi_args, lexicon):
 
     words = set(json.loads(challenge_words))
 
-    result = lex.challenge(words)
+    result = lexicon.challenge(words)
 
     print json.dumps(result)
 
@@ -97,13 +97,13 @@ def main (args, cgi_args):
         print json.dumps("Invalid lexicon '%s'" % lexicon)
 
     if cgi_args.has_key("d"):
-        return load(args, cgi_args, lexicon)
+        return load(args, cgi_args, lex)
     elif cgi_args.has_key("v"):
-        return save(args, cgi_args, lexicon)
+        return save(args, cgi_args, lex)
     elif cgi_args.has_key("s"):
-        return search(args, cgi_args, lexicon)
+        return search(args, cgi_args, lex)
     elif cgi_args.has_key("w"):
-        return challenge(args, cgi_args, lexicon)
+        return challenge(args, cgi_args, lex)
     else:
         jsond()
         print json.dumps("Nothing.")
