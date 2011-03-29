@@ -264,3 +264,24 @@ class SubAnagramPattern (AnagramPattern):
         """
 
         super(SubAnagramPattern, self).__init__(subanagram=True)
+
+class Pattern (AnagramPattern):
+    """
+    This is a simple parser that converts a pattern string into a regular expression.
+    """
+    _regexp = None
+
+    def __init__ (self):
+        super(Pattern, self).__init__()
+
+    def as_regexp (self):
+        if self._regexp is not None:
+            return self._regexp
+
+        pat = self.pattern.replace("?", ".").replace("*", ".*")
+        if not pat.endswith("$"):
+            pat = pat + "$"
+
+        self._regexp = re.compile(pat)
+
+        return self._regexp

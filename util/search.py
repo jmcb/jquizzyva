@@ -122,25 +122,40 @@ class StringSearch (SearchType):
     def __repr__ (self):
         return "<%s search_string:%s>" % (self.__class__.__name__, self.search_string)
 
-class PatternMatch (StringSearch):
-    """
-    A derivative of StringSearch, this search applies a pattern specifically to
-    the database.
-    """
-
-    column = "words.word"
-
-    def clause (self):
-        st = self.search_string.replace("?", "_").replace("*", "%")
-
-        if self.negated:
-            return ("%s LIKE ?" % self.column, (st, ))
-        else:
-            return ("%s NOT LIKE ?" % self.column, (st, ))
-
 try:
-    from util._search import AnagramMatchBase, SubanagramMatchBase
+    from util._search import AnagramMatchBase, SubanagramMatchBase, PatternMatchBase
 except:
+    class PatternMatch (StringSearch):
+        """
+        A derivative of StringSearch, this search applies a pattern specifically to
+        the database.
+        """
+
+        column = "words.word"
+
+        def clause (self):
+            if "[" in self.search_string:
+                return CALLBACK_FUNCTION
+
+            st = self.search_string.replace("?", ".").replace("*", ".*")
+
+            if self.negated:
+                return ("%s LIKE ?" % self.column, (st, ))
+            else:
+                return ("%s NOT LIKE ?" % self.column, (st, ))
+
+        def pattern (self):
+            if self.patternobj is None:
+                self.patternobj = util.pattern.Pattern.fromstring(self.search_string).as_regexp()
+
+            def search_function (word):
+                return bool(self.patternobj.match(word))
+
+            return search_function
+
+        def bounds (self):
+            return self.patternobj.bounds()
+
     class AnagramMatch (StringSearch):
         """
         A derivative of StringSearch, this search looks for anagrams of the string
@@ -158,7 +173,7 @@ except:
             return ("words.alphagram=?", (ag, ))
 
         def pattern (self):
-            if self.patternobj == None:
+            if self.patternobj is None:
                 self.patternobj = util.pattern.AnagramPattern.fromstring(self.search_string)
 
             def search_function (word):
@@ -180,7 +195,7 @@ except:
             return CALLBACK_FUNCTION
 
         def pattern (self):
-            if self.patternobj == None:
+            if self.patternobj is None:
                 self.patternobj = util.pattern.SubAnagramPattern.fromstring(self.search_string)
 
             def search_function (word):
@@ -188,6 +203,41 @@ except:
 
             return search_function
 else:
+    class _SimplePatternMatch (StringSearch):
+        def clause (self):
+            st = self.search_string.replace("?", ".").replace("*", ".*")
+
+            if self.negated:
+                return ("%s LIKE ?" % self.column, (st, ))
+            else:
+                return ("%s NOT LIKE ?" % self.column, (st, ))
+
+        def asdict (self):
+            return {"search_type": "PatternMatch", "search_string": self.search_string, "negated": self.negated}
+
+    class _PatternMatch (PatternMatchBase, StringSearch):
+        def asdict (self):
+            return {"search_type": "PatternMatch", "search_string": self.search_string, "negated": self.negated}
+
+        @classmethod
+        def fromdict (cls, my_dict):
+            my_dict = dict(my_dict)
+            my_dict.pop("search_type")
+            return cls(**my_dict)
+
+        def asjson (self):
+            return json.dumps(self.as_dict())
+
+        @classmethod
+        def fromjson (cls, data):
+            return cls.fromdict(json.loads(data))
+
+    def PatternMatch (search_string, negated=False):
+        if "[" in search_string search_string:
+            return _PatternMatch(search_string=search_string, negated=negated)
+        else:
+            return _SimplePatternMatch(search_string=search_string, negated=negated)
+
     class _AlphagramMatch (StringSearch):
         def clause (self):
 
