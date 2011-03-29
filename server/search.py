@@ -7,7 +7,16 @@ import traceback
 
 import util.search, util.db
 
+def json ():
+    print "Content-type: application/json"
+    print
+
+def xml ():
+    print "Content-type: application/xml"
+    print
+
 def main (args, cgi_args):
+
     search_term = cgi_args.getfirst("term", None)
 
     if search_term is None:
@@ -19,6 +28,7 @@ def main (args, cgi_args):
         challenge_words = cgi_args.getfirst("w", None)
 
     if search_term is None and challenge_words is None:
+        json()
         print json.dumps("No search terms provided.")
         return
 
@@ -28,21 +38,26 @@ def main (args, cgi_args):
         lexicon = cgi_args.getfirst("l", None)
 
     if lexicon is None:
+        json()
         print json.dumps("No lexicon provided.")
         return
 
     lex = util.db.lexicon(lexicon)
 
     if lex is None:
+        json()
         print json.dumps("Invalid lexicon '%s'" % lexicon)
 
     if search_term is not None:
+        json()
+
         search_term = util.search.SearchList.fromjson(search_term)
 
         result = lex.search(search_term, show_query=False)
 
         print json.dumps(result)
     else:
+        json()
         words = set(json.loads(challenge_words))
 
         result = lex.challenge(words)
@@ -52,11 +67,10 @@ def main (args, cgi_args):
 if __name__=="__main__":
     sys.stderr=sys.stdout
 
-    print "Content-type: application/json"
-    print
-
     try:
         main (sys.argv, cgi.FieldStorage())
     except Exception, e:
+        json()
+
         print json.dumps({"exception_type": e.__class__.__name__, "exception_message": str(e)})
         
