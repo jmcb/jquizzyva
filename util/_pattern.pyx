@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-#def try_word (object pattern, char* word):
-#    return _try_word(pattern, word)
-
-cdef class CPattern (object):
+cdef class CAnagramPattern (object):
     cdef int blanks
     cdef int length
     cdef int num_letters
@@ -15,7 +12,7 @@ cdef class CPattern (object):
     cdef list neg_sets
     cdef list letters
 
-    def __init__ (CPattern self, int blanks, int length, int num_letters, list letters, int num_sets, list sets, int num_neg_sets, list neg_sets, bint subanagram, bint wildcard):
+    def __init__ (CAnagramPattern self, int blanks, int length, int num_letters, list letters, int num_sets, list sets, int num_neg_sets, list neg_sets, bint subanagram, bint wildcard):
         self.blanks = blanks
         self.length = length
         self.num_letters = num_letters
@@ -27,10 +24,10 @@ cdef class CPattern (object):
         self.neg_sets = neg_sets
         self.letters = letters
 
-def try_word (CPattern pattern, char* word):
+def try_word (CAnagramPattern pattern, char* word):
     return _try_word(pattern, word)
 
-cdef int _try_word (CPattern pattern, char* word):
+cdef int _try_word (CAnagramPattern pattern, char* word):
     cdef int blanks = pattern.blanks
     cdef int length = pattern.length
     cdef int wordlen = len(word)
