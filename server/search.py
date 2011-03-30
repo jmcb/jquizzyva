@@ -24,6 +24,18 @@ def xml (fn):
     print """Content-type: application/xml; name='%s'""" % fn
     print """Content-disposition: attachment; filename='%s'""" % fn
 
+def html ():
+    print """Content-type: text/html"""
+    print
+
+def textarea (f):
+    @functools.wraps(f)
+    def textarea (*args, **kwargs):
+        html()
+        print "<textarea>"
+        f(*args, **kwargs)
+        print "</textarea>"
+
 @jsonw
 def search (args, cgi_args, lexicon):
     search_term = cgi_args.getfirst("s", None)
@@ -50,9 +62,12 @@ def challenge (args, cgi_args, lexicon):
 
     print json.dumps(result)
 
-@jsonw
+@textarea
 def load (args, cgi_args, lexicon):
-    fileitem = cgi_args.getfirst("l", None)
+
+    html()
+
+    fileitem = cgi_args.getfirst("d", None)
 
     if fileitem is None:
         return
