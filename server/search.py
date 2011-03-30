@@ -66,9 +66,6 @@ def challenge (args, cgi_args, lexicon):
 
 @textarea
 def load (args, cgi_args, lexicon):
-
-    html()
-
     fileitem = cgi_args["d"]
 
     if fileitem is None:
