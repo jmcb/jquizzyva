@@ -52,6 +52,13 @@ The jQuery `fileinput`_ plug-in is licensed under the terms of the GNU Public
 License. My alterations to it, like the rest of this code, are licensed under
 the terms of the above MIT license.
 
+---
+
+The jQuery `forms`_ plug-in is licensed under the GNU Public License adn the
+MIT license.
+
+.. _`forms`: http://malsup.com/jquery/form/#download
+
 .. _`fileinput`: http://plugins.jquery.com/project/fileinput
 
 .. _`timers`: http://plugins.jquery.com/files/jquery.timers-1.2.js.txt
