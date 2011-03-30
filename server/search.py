@@ -36,6 +36,8 @@ def textarea (f):
         f(*args, **kwargs)
         print "</textarea>"
 
+    return textarea
+
 @jsonw
 def search (args, cgi_args, lexicon):
     search_term = cgi_args.getfirst("s", None)
