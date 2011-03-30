@@ -67,7 +67,7 @@ def load (args, cgi_args, lexicon):
 
     html()
 
-    fileitem = cgi_args.getfirst("d", None)
+    fileitem = cgi_args["d"]
 
     if fileitem is None:
         return
