@@ -140,9 +140,9 @@ except:
             st = self.search_string.replace("?", ".").replace("*", ".*")
 
             if self.negated:
-                return ("%s LIKE ?" % self.column, (st, ))
-            else:
                 return ("%s NOT LIKE ?" % self.column, (st, ))
+            else:
+                return ("%s LIKE ?" % self.column, (st, ))
 
         def pattern (self):
             if self.patternobj is None:
@@ -211,9 +211,9 @@ else:
             st = self.search_string.replace("?", ".").replace("*", ".*")
 
             if self.negated:
-                return ("%s LIKE ?" % self.column, (st, ))
-            else:
                 return ("%s NOT LIKE ?" % self.column, (st, ))
+            else:
+                return ("%s LIKE ?" % self.column, (st, ))
 
         def asdict (self):
             return {"search_type": "PatternMatch", "search_string": self.search_string, "negated": self.negated}
