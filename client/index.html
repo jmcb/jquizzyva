@@ -1,475 +1,61 @@
 <!DOCTYPE html>
 <head>   
         <link rel="shortcut icon" href="http://wxwhatever.com/jquizzyva/favicon.ico" />
+        <!-- Stylesheets -->
         <link rel="Stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/black-tie/jquery-ui.css">
         <link href="css/flexigrid.css" type="text/css" rel="Stylesheet">
         <link href="css/jquery.ui.selectmenu.css" type="text/css" rel="Stylesheet">
         <link href="css/jquery.ui.tabs.closable.css" type="text/css" rel="Stylesheet">
         <link href="css/jquizzyva.css" type="text/css" rel="Stylesheet">
         <link href="css/jquery.ui.fileinput.css" type="text/css" rel="Stylesheet">
+        <!-- Scripts -->
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/json2.js"></script>
+        <!-- jQuery plugins -->
         <script type="text/javascript" src="js/flexigrid.js"></script>
         <script type="text/javascript" src="js/jquery.ui.selectmenu.js"></script>
-        <script type="text/javascript" src="js/json2.js"></script>
         <script type="text/javascript" src="js/jquery.ui.tabs.closable.js"></script>
         <script type="text/javascript" src="js/jquery.timers.js"></script>
         <script type="text/javascript" src="js/jquery.ui.fileinput.js"></script>
-        <style>
-        </style>
+        <script type="text/javascript" src="js/jquery.forms.js"></script>
+        <!-- jQuiz setup -->
         <script type="text/javascript">
-            $(document).ready(function() {
-                var tabs = {
-                    search_tabs: 0,
-                    quiz_tabs: 0,
-                    judge_mode: false,
-                    search_items: 0,
-                    prompt_mode: false,
-                    challenge_mode: false,
-                    challenge_count: 0,
-                    loading: false,
-                }
-
-                var dialog = function (text, no_load)
-                {
-                    var dia = $("<div>").append($("<p>").text(text)).append($("<p>").addClass((no_load) ? "" : "loading_div").html("&nbsp;")).addClass("jquiz_dialog").dialog({modal: true, buttons: ((no_load) ? {"OK": function() {$(this).dialog("close")}} : {}), close: function() {$(this).dialog("destroy").remove();}}).dialog("open")
-                    return dia;
-                }
-
-                var loader = function ()
-                {
-                    var dia = $("<div>").append($("<p>").text("Please select saved search to load:")).append($("<input id='uploader' type='file'>")).addClass("jquiz_dialog").dialog({modal: true, width: 400, close: function () { $(this).dialog("destroy").remove(); }}).dialog("open")
-                    $("#uploader", dia).fileinput({buttonText:"Select", buttonOptions: {icons: {primary: "ui-icon-folder-open"}}});
-                    $(".fileinput-input", dia).innerHeight($(".fileinput-wrapper .ui-button").innerHeight());
-                    return dia;
-                }
-
-                var row_elements = function (row)
-                {
-                    var search_type = $(".search_types", row).val();
-                    if (search_type == "AnagramMatch" || search_type == "SubanagramMatch" || search_type == "PatternMatch")
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return 2;
-                    }
-                }
-
-                var serialise_row = function (row) {
-                    var search_type = $(".search_types", row).val();
-                    var negated = $(".search_negated", row).hasClass("ui-state-active");
-                    if (row_elements(row) == 1)
-                    {
-                        return {"search_type": search_type, "negated": negated, search_string: $(".search_term_first input", row).val()};
-                    }
-                    else
-                    {
-                        return {"search_type": search_type, "negated": negated, search_range_start: parseInt($(".search_term_first input", row).val()), search_range_stop: parseInt($(".search_term_second input", row).val())};
-                    }
-                }
-
-                var validate_row = function (row)
-                {
-                    var search_type = $(".search_types", row).val();
-                    var flash_message = "";
-                    var par = $(this).parent().parent().parent().parent().parent()
-
-                    if ($(".search_term_first input", row).val().trim()=="")
-                    {
-                        flash_message = "Can't search for nothing!";
-                    }
-
-                    if (row_elements(row) == 1)
-                    {
-                        var term = $(".search_term_first input", row).val();
-                        // Validate that the pattern is valid.
-                        if (/\[\^?[A-Z]*$/.test(term))
-                            flash_message = "Character set does not end!"
-                        if (/^[A-Z\*\?]*\]/.test(term))
-                            flash_message = "Character set does not start!"
-                        if (/\[\^?\]/.test(term))
-                            flash_message = "Empty character set!"
-                        if (/\[\^?[A-Z]*[\?\*]+[A-Z]*\]/.test(term))
-                            flash_message = "Can't have wildcards in character sets!"
-                    }
-
-                    if (row_elements(row) == 2)
-                    {
-                        if ($(".search_term_second input", row).val().trim() == "")
-                            $(".search_term_second input", row).val($(".search_term_first input", row).val());
-                    }
-
-
-                    if (flash_message.trim() != "")
-                    {
-                        $(".flash_messages", par).empty();
-                        $("<span>"+flash_message+"</span>").attr("id", "cur_flash_message").appendTo(".flash_messages", par).fadeIn().fadeOut().fadeIn();
-                        setTimeout(function() {
-                            $("#cur_flash_message").fadeOut(500);
-                        }, 3000);
-
-                        return false;
-                    }
-
-                    return true;
-                }
-
-                $("#tabs").tabs({
-                    closable: 'all',
-                    closeTemplate: '<a onclick="return false;"><span class="ui-icon-close"></span></a>',
-                    closeAnchorClass: 'ui-tabs-close ui-button-icon-primary ui-icon ui-icon-closethick',
-                    });
-                $("#search_button").button({icons: {primary: "ui-icon-search"}}).click(function()
-                {
-                    tabs.search_tabs++;
-                    var this_pane = "#search_pane" + tabs.search_tabs;
-                    $("#tabs").tabs("add", this_pane, "Search&nbsp;&nbsp;");
-                    $(this_pane).append($("#search_pane").children().clone());
-                    $(".results_grid", $(this_pane)).flexigrid({
-                        height:'auto',
-                        striped: true,
-                        sortname: "alphagram",
-                        sortorder: "asc",
-                        dataType: "json",
-                        autoload: false,
-                        resizable: false,
-                        minColToggle: 0,
-                        colModel: [
-                            {"display": "?", name: "alphagram", width: 50, sortable: false, align: 'center'},
-                            {"display": "<", name: "front_hooks", width: 50, sortable: false, align: 'right'},
-                            {"display": "Word", name: "word", width: 150, sortable: true, align: 'center'},
-                            {"display": ">", name: "back_hooks", width: 50, sortable: false, align: 'left'},
-                            {"display": "Definition", name: "definition", width: 400, sortable: false, align: "left"},
-                        ],
-                        width: 700,
-                        height: 300,
-                    }); 
-                    $("#do_search", $(this_pane)).button({icons: {primary: "ui-icon-search"}}).click(function()
-                        {
-                            var progress = dialog("Searching, please wait...");
-
-                            var result = []
-                            var validate_failed = false;
-                            $(".search_components", this_pane).each(function()
-                                {
-                                    if (!validate_row(this))
-                                    {
-                                        validate_failed = true;
-                                        return false;
-                                    }
-
-                                    result.push(serialise_row(this));
-                                });
-
-                            if (validate_failed)
-                                return false;
-
-                            var data = {"s": JSON.stringify(result), "l": "CSW"};
-
-                            $.post("http://wxwhatever.com/cgi-bin/search.json?", data, function(data)
-                                {
-                                    progress.dialog("close");
-
-                                    var results = {total: data.length, page: 1, rows: []}
-                                    $.each(data, function(index) {
-                                        results.rows.push({cell: this});
-                                    });
-
-                                    $(".results_grid", this_pane).flexAddData(results);
-
-                                    if (results.total == 0)
-                                    {
-                                        $(".flash_messages", this_pane).empty();
-                                        $("<span>No results.</span>").attr("id", "cur_flash_message").appendTo(".flash_messages", this_pane).fadeIn().fadeOut().fadeIn();
-                                        setTimeout(function() {
-                                            $("#cur_flash_message").fadeOut(500);
-                                        }, 3000);
-                                    }
-                                });
-
-                            $(document).ajaxError(function (e, xhr, settings, exception)
-                            {
-                                progress.dialog("close");
-                                dialog("Error in: " + settings.url + ' \n' + 'error:\n' + xhr.responseText, true);
-                            });
-
-                            return false;
-                        });
-                    var add_search = function()
-                        {
-                            tabs.search_items++;
-
-                            var comp = $("#search_component").clone();
-                            comp.attr("id", "search_component"+tabs.search_items);
-                            comp.children().children().each(function(index)
-                                {
-                                    if ($(this).attr("id"))
-                                    {
-                                        $(this).attr("id", $(this).attr("id")+tabs.search_items);
-                                    }
-                                    if ($(this).attr("for"))
-                                    {
-                                        $(this).attr("for", $(this).attr("for")+tabs.search_items);
-                                    }
-                                });
-                            $(".add", comp).button({icons: {primary: "ui-icon-plus"}, text: false}).click(add_search);
-                            $(".delete", comp).button({icons: {primary: "ui-icon-minus"}, text: false}).click(function(){$(this).parent().parent().empty(); return false;});
-                            $(".negated", comp).button({icons: {primary: "ui-icon-closethick"}, text:false});
-                            $(".search_types", comp).selectmenu({
-                                style:'dropdown', 
-                                width: 300}
-                            ).change(function()
-                                {
-                                    var make_input = function()
-                                        {
-                                            return $("<input type='text'>").addClass("ui-widget-header").addClass("ui-state-default").addClass("ui-corner-all").height($("#load_button").innerHeight()-1).keypress(function(event)
-                                            {
-                                                var row = $(this).parent().parent();
-                                                var is_number = row_elements(row) == 2;
-
-                                                var keys = String.fromCharCode(event.which).toUpperCase();
-                                                if (/[A-Z\[\]\*\?\^0-9]*/.test(keys))
-                                                {
-                                                    if (!is_number && /\d/.test(keys))
-                                                    {
-                                                        return false;
-                                                    }
-                                                    else if (is_number && /[^\d]/.test(keys))
-                                                    {
-                                                        return false;
-                                                    }
-                                                }
-                                            }).keyup(function()
-                                                {
-                                                    $(this).val($(this).val().toUpperCase());
-                                                });
-                                        }
-
-                                    var val = $(this).val();
-                                    if (val == "AnagramMatch" || val == "SubanagramMatch" || val == "PatternMatch")
-                                    {
-                                        var row = $(".search_term_first", $(this).parent().parent());
-                                        if (!row.children().length)
-                                            row.empty().append(make_input());
-                                        else if (/\d/.test($("input", row).val()))
-                                            $("input", row).val("");
-
-                                        row = $(".search_term_second", $(this).parent().parent())
-                                        if (row.children().length)
-                                            row.empty()
-                                    }
-                                    else
-                                    {
-                                        var row = $(".search_term_first", $(this).parent().parent())
-                                        if (!row.children().length)
-                                            row.empty().append(make_input());
-                                        else if (/[^\d]/.test($("input", row).val()))
-                                            $("input", row).val("");
-
-                                        row = $(".search_term_second", $(this).parent().parent())
-                                        if (!row.children().length)
-                                            row.empty().append(make_input());
-                                        else if (/[^\d]/.test($("input", row).val()))
-                                            $("input", row).val("");
-                                    }
-                                }).change();
-
-                            $("#search_options", $(this_pane)).append(comp);
-                            return false;
-                        }
-
-                    add_search();
-                    $(".delete", this_pane).button("option", "disabled", true);
-                    $("#tabs").tabs("select", $("#tabs").tabs("length") - 1);
-                });
-                $("#quiz_button").button({icons: {primary: "ui-icon-lightbulb"}}).click(function()
-                {
-                    tabs.quiz_tabs++;
-                    var this_pane = "#quiz_pane" + tabs.quiz_tabs;
-                    $("#tabs").tabs("add", this_pane, "Quiz&nbsp;&nbsp;");
-                    $(this_pane).append($("#quiz_pane").children().clone());
-                    $("#tabs").tabs("select", $("#tabs").tabs("length") - 1);
-                });
-                $("#judge_button").button({icons: {primary: "ui-icon-person"}}).click(function()
-                {
-                    tabs.judge_mode = true;
-                    tabs.prompt_mode = false;
-                    tabs.challenge_mode = false;
-                    tabs.challenge_count = 0;
-                    tabs.loading = false;
-
-                    $("body").children().hide()
-                    $("#judge_pane").show();
-                    $("#return_button").click(function()
-                    {
-                        $("body").children().not(".ui-helper-hidden").not("ui-selectmenu-menu-popup").not("ul").show();
-                        $(".ui-tabs-panel .search_types").selectmenu("destroy").selectmenu({
-                                style:'dropdown', 
-                                width: 300});
-                        $("#judge_pane").hide();
-                        tabs.judge_mode = false;
-                    });
-                    var this_pane = $("#judge_pane");
-
-                    var reset_func = function()
-                    {
-                        $("#judge_entry").empty();
-                        $("#judge_message").html("Challenger: How many words would you like to challenge?");
-                        tabs.prompt_mode = false;
-                        tabs.challenge_mode = false;
-                    }
-
-                    var do_prompt = function()
-                    {
-                        tabs.prompt_mode = true;
-                        tabs.challenge_mode = false;
-                        var count = parseInt($("#judge_entry").html());
-                        tabs.challenge_count = count;
-                        $("#judge_message").html("1. Enter your word" + ((count != 1) ? "s, separated with COMMA." : "."));
-                        $("#judge_message").append("<br />").append("2. Press TAB or ENTER to challenge.");
-                        $("#judge_entry").html("");
-                    }
-
-                    var do_challenge = function()
-                    {
-                        tabs.prompt_mode = false;
-                        tabs.challenge_mode = true;
-                        tabs.loading = true;
-                        var words = []
-                        $.each($("#judge_entry").html().split(","), function()
-                            {
-                                if (this.trim() != "")
-                                    words.push(this.trim());
-                            });
-
-                        var data = {"w": JSON.stringify(words), "l": "CSW"};
-
-                        $("#judge_entry").empty().addClass("loading_div");
-
-                        $.post("http://wxwhatever.com/cgi-bin/search.json?", data, function(data)
-                            {
-                                tabs.loading = false;
-
-                                $("#judge_entry").removeClass("loading_div")
-                                if (data == "yes")
-                                    $("#judge_entry").empty().append($("<span>").css("color", "#00ff00").html("Yes, the play " + words.join(", ") + " is acceptable!"));
-                                else
-                                    $("#judge_entry").empty().append($("<span>").css("color", "#ff0000").html("No. " + words.join(", ") + " is not acceptable!"));
-
-                                $("#judge_entry").oneTime(5000, "reset", reset_func);
-                            });
-
-                        $(document).ajaxError(function (e, xhr, settings, exception)
-                        {
-                            tabs.loading = false;
-                            $("#judge_entry").removeClass("loading_div")
-                            dialog('Error in: ' + settings.url + ' \n' + 'error:\n' + xhr.responseText, true);
-                        });
-                    }
-
-                    reset_func();
-
-                    $("#judge_entry").html("");
-
-                    $(document).unbind("keypress").unbind("keydown");
-
-                    $(document).keypress(function(event) {
-                        if (!tabs.judge_mode || tabs.prompt_mode || tabs.challenge_mode)
-                            return;
-
-                        var keys = String.fromCharCode(event.which);
-                        var cur_cont = $("#judge_entry").html();
-
-
-                        if ("1234567890".indexOf(keys) != -1)
-                        {
-                            $("#judge_entry").append(keys);
-                            $("#judge_entry").stopTime();
-                            $("#judge_entry").oneTime(2500, do_prompt);
-                            return false;
-                        }
-                        }).keydown(
-                    function(event)
-                    {
-                        if (!tabs.judge_mode || tabs.prompt_mode || tabs.challenge_mode)
-                            return;
-
-                        var cur_cont = $("#judge_entry").html();
-                        if (event.which == 8)
-                        {
-                            $("#judge_entry").html(cur_cont.substr(0, cur_cont.length - 1));
-                            return false;
-                        }
-                        else if (event.which == 13)
-                        {
-                            var count = parseInt($("#judge_entry").html());
-                            if (!count)
-                                return false;
-
-                            $("#judge_entry").stopTime();
-
-                            do_prompt();
-                            return false;
-                        }
-                    }).keypress(function(event)
-                    {
-                        if (!tabs.judge_mode || !tabs.prompt_mode)
-                            return;
-
-                        var keys = String.fromCharCode(event.which).toUpperCase();
-                        if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(keys) != -1)
-                        {
-                            $("#judge_entry").append(keys);
-                            return false;
-                        }
-                        else if (event.which == 44)
-                        {
-                            if (tabs.challenge_count <= 1)
-                                return false;
-                            
-                            tabs.challenge_count--;
-
-                            $("#judge_entry").append(", ");
-                            return false;
-                        }
-                    }).keydown(
-                    function(event)
-                    {
-                        if (!tabs.judge_mode || !tabs.prompt_mode)
-                            return;
-
-                        var cur_cont = $("#judge_entry").html();
-
-                        if (event.which == 8)
-                        {
-                            if ($("#judge_entry").text().substr(-1) == ",")
-                                tabs.challenge_count++;
-
-                            $("#judge_entry").html(cur_cont.substr(0, cur_cont.length - 1));
-                            return false;
-                        }
-                        else if (event.which == 9)
-                        {
-                            do_challenge();
-                            return false;
-                        }
-                    }).keypress(function(event)
-                    {
-                        if (!tabs.judge_mode || !tabs.challenge_mode || tabs.loading)
-                            return;
-
-                        $("#judge_entry").stopTime();
-                        reset_func();
-                    });
-                });
-
-                $("#load_button").button({icons: {primary: "ui-icon-folder-open"}}).click(loader);
-                $("#save_button").button({icons: {primary: "ui-icon-disk"}});
-                $("#return_button").button();
-                });
+            var tabs = {
+                search_tabs: 0,
+                quiz_tabs: 0,
+                judge_mode: false,
+                search_items: 0,
+                prompt_mode: false,
+                challenge_mode: false,
+                challenge_count: 0,
+                loading: false,
+            }
         </script>
+        <!-- jQuizzyva modules -->
+        <script type="text/javascript" src="js/jquiz.core.js"></script>
+        <script type="text/javascript" src="js/jquiz.search.js"></script>
+        <script type="text/javascript" src="js/jquiz.judge.js"></script>
+        <script type="text/javascript" src="js/jquiz.save.js"></script>
+        <script type="text/javascript" src="js/jquiz.load.js"></script>
+        <script type="text/javascript" src="js/jquiz.quiz.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function()
+        {
+            $("#tabs").tabs({
+                closable: 'all',
+                closeTemplate: '<a onclick="return false;"><span class="ui-icon-close"></span></a>',
+                closeAnchorClass: 'ui-tabs-close ui-button-icon-primary ui-icon ui-icon-closethick',
+            });
+
+            $("#quiz_button").button({icons: {primary: "ui-icon-lightbulb"}}).click(add_quiz_pane)
+            $("#search_button").button({icons: {primary: "ui-icon-search"}}).click(add_search_pane);
+            $("#judge_button").button({icons: {primary: "ui-icon-person"}}).click(judge_mode);
+            $("#load_button").button({icons: {primary: "ui-icon-folder-open"}}).click(loader);
+            $("#save_button").button({icons: {primary: "ui-icon-disk"}}).click(saver);
+            $("#return_button").button();
+        }); 
+        </script>        
         <title>jQuizzyva!</title>
     </head><body>
         <div id="button_bar">

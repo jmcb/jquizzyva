@@ -30,8 +30,7 @@
 	$.widget("shimmy.fileinput", {
 		options: {
 			buttonText: "Browse",
-			inputText: "",
-            buttonOptions: {},
+			inputText: ""
 		},
 
 		_create: function(){
@@ -57,16 +56,16 @@
 			self.fileFile
 				.addClass(fileClasses)
 				.wrap(self.fileWrapper),
-			self.fileInput = $('<span></span>')
+			self.fileInput = $('<input></input>')
 				.addClass(inputClasses)
 				.text(self._getText())
 				.insertBefore(self.fileFile),
-			self.fileButton = $('<button>'+options.buttonText+'</span>')
+			self.fileButton = $('<button>'+options.buttonText+'</button>')
                 .button(options.buttonOptions)
-				.insertAfter(self.fileInput)
+				.insertAfter(self.fileInput);
 
 			self.fileFile.bind('change.fileinput mouseout.fileinput',function(){
-				self.fileInput.text(self._getText());
+				self.fileInput.val(self._getText());
 			}).bind('focusin.fileinput',function(){
 				self.fileButton.addClass(hoverClasses);
 			}).bind('focusout.fileinput',function(){
@@ -112,6 +111,9 @@
 			var self = this;
 			$.Widget.prototype._setOption.apply( self, arguments );
 			switch(option){
+				case "buttonText":
+					self.fileButton.text(value);
+					break;
 				case "inputText":
 					self.fileInput.text(self._getText());
 					break;
