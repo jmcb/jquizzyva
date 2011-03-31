@@ -102,6 +102,39 @@ class Database (object):
 def csw ():
     return Database(util.config.LEXICONS["CSW"])
 
+def cd ():
+    return Database(util.config.LEXICONS["CD"])
+
+def ods4 ():
+    return Database(util.config.LEIXCONS["ODS4"])
+
+def ods5 ():
+    return Database(util.config.LEIXCONS["ODS5"])
+
+def oswi ():
+    return Database(util.config.LEXICONS["OSWI"])
+
+def ospd4_lwl ():
+    return Database(util.config.LEXICONS["OSPD4+LWL"])
+
+def owl_lwl ():
+    return Database(util.config.LEXICONS["OWL+LWL"])
+
+def owl2_lwl ():
+    return Database(util.config.LEXICONS["OWL2+LWL"])
+
+def swl ():
+    return Database(util.config.LEXICONS["SWL"])
+
+def volost ():
+    return Database(util.config.LEXICONS["Volost"])
+
+def wwf ():
+    return Database(util.config.LEXICONS["WWF"])
+
+def zinga ():
+    return Database(util.config.LEXICONS["Zinga"])
+
 def lexicon (lex):
     if util.config.LEXICONS.has_key(lex):
         return Database(util.config.LEXICONS[lex])
