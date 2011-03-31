@@ -83,9 +83,9 @@ class Database (object):
                     self.register(fname, fn)
 
         if show_query:
-            print query.replace("?", "%s") % args
+            print query.replace("?", "%s") % tuple(args)
 
-        return self.query(query, args)
+        return self.query(query, tuple(args))
 
     def challenge (self, words):
         query = "SELECT word FROM words WHERE " + " OR ".join(["word=?" for word in words])
