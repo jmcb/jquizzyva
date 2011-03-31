@@ -137,7 +137,7 @@ except:
             if "[" in self.search_string:
                 return CALLBACK_FUNCTION
 
-            st = self.search_string.replace("?", ".").replace("*", ".*")
+            st = self.search_string.replace("?", "_").replace("*", "%")
 
             if self.negated:
                 return ("%s NOT LIKE ?" % self.column, (st, ))
@@ -208,7 +208,7 @@ else:
         column = "words.word"
 
         def clause (self):
-            st = self.search_string.replace("?", ".").replace("*", ".*")
+            st = self.search_string.replace("?", "_").replace("*", "%")
 
             if self.negated:
                 return ("%s NOT LIKE ?" % self.column, (st, ))
