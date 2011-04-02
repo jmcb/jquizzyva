@@ -1,13 +1,23 @@
 var dialog = function (text, no_load)
 {
-    var dia = $("<div>").append($("<p>").text(text)).append($("<p>").addClass((no_load) ? "" : "loading_div").html("&nbsp;")).addClass("jquiz_dialog").dialog({modal: true, buttons: ((no_load) ? {"OK": function() {$(this).dialog("close")}} : {}), close: function() {$(this).dialog("destroy").remove();}}).dialog("open")
-    return dia;
+    var dia = $("<div>").append($("<p>").text(text)).append($("<p>").addClass((no_load) ? "" : "loading_div").html("&nbsp;")).addClass("jquiz_dialog").dialog({modal: true, buttons: ((no_load) ? {"OK": function() {$(this).dialog("close")}} : {}), close: function() {$(this).dialog("destroy").remove()}}).dialog("open")
+    return dia
+}
+
+var current_lexicon = function (no_default)
+{
+    var cur = $.cookie("jquiz_default_lexicon")
+    
+    if (!cur && no_default)
+        return "CSW"
+
+    return cur
 }
 
 var lexicon_selector = function (element_to_append)
 {
     var selector = $(".search_lexicon").clone()
-    var lexicon = $.cookie("jquiz_default_lexicon")
+    var lexicon = current_lexicon(true)
 
     if (lexicon)
     {
@@ -15,7 +25,7 @@ var lexicon_selector = function (element_to_append)
             function()
             {
                 if ($(this).val() == lexicon)
-                    $(this).attr("selected", true);
+                    $(this).attr("selected", true)
             })
     }
     
@@ -24,7 +34,7 @@ var lexicon_selector = function (element_to_append)
 
     selector.selectmenu({
         style: 'dropdown',
-        width: 300});
+        width: 300})
 
     return selector
 }
