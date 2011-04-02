@@ -3,6 +3,7 @@ var add_search = function(this_pane)
         tabs.search_items++;
 
         var comp = $("#search_component").clone();
+
         comp.attr("id", "search_component"+tabs.search_items);
         comp.children().children().each(function(index)
             {
@@ -77,7 +78,7 @@ var add_search = function(this_pane)
                 }
             }).change();
 
-        $("#search_options", $(this_pane)).append(comp);
+        comp.insertBefore($(".search_button_table", $(this_pane)))
         return comp;
     }
 
@@ -106,6 +107,7 @@ var add_search_pane = function ()
         width: 700,
         height: 300,
     }); 
+    lexicon_selector($(".search_lexicon_select", $(this_pane)))
     $("#do_search", $(this_pane)).button({icons: {primary: "ui-icon-search"}}).click(function()
         {
             var progress = dialog("Searching, please wait...");
@@ -126,7 +128,9 @@ var add_search_pane = function ()
             if (validate_failed)
                 return false;
 
-            var data = {"s": JSON.stringify(result), "l": "CSW"};
+            lexicon = $(".search_lexicon_select", this_pane).children().first().val()
+
+            var data = {"s": JSON.stringify(result), "l": lexicon};
 
             $.post("http://wxwhatever.com/cgi-bin/search.json?", data, function(data)
                 {

@@ -83,3 +83,7 @@ h2 {
 .search_flash_messages {
     width: 80%;
 }
+
+.search_lexicon_select {
+    text-align: center;
+}

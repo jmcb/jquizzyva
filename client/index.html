@@ -9,7 +9,7 @@
         <link href="css/jquizzyva.css" type="text/css" rel="Stylesheet">
         <link href="css/jquery.ui.fileinput.css" type="text/css" rel="Stylesheet">
         <!-- Scripts -->
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/json2.js"></script>
         <!-- jQuery plugins -->
@@ -19,6 +19,7 @@
         <script type="text/javascript" src="js/jquery.timers.js"></script>
         <script type="text/javascript" src="js/jquery.ui.fileinput.js"></script>
         <script type="text/javascript" src="js/jquery.forms.js"></script>
+        <script type="text/javascript" src="js/jquery.cookie.js"></script>
         <!-- jQuiz setup -->
         <script type="text/javascript">
             var tabs = {
@@ -39,6 +40,7 @@
         <script type="text/javascript" src="js/jquiz.save.js"></script>
         <script type="text/javascript" src="js/jquiz.load.js"></script>
         <script type="text/javascript" src="js/jquiz.quiz.js"></script>
+        <script type="text/javascript" src="js/jquiz.prefs.js"></script>
         <script type="text/javascript">
         $(document).ready(function()
         {
@@ -53,11 +55,14 @@
             $("#judge_button").button({icons: {primary: "ui-icon-person"}}).click(judge_mode);
             $("#load_button").button({icons: {primary: "ui-icon-folder-open"}}).click(loader);
             $("#save_button").button({icons: {primary: "ui-icon-disk"}}).click(saver);
+            $("#prefs_button").button({icons: {primary: "ui-icon-pencil"}}).click(preferences);
             $("#return_button").button();
         }); 
         </script>        
         <title>jQuizzyva!</title>
-    </head><body>
+    </head>
+    <body>
+        <!-- The main button bar -->
         <div id="button_bar">
             <table class="button_table">
                 <tr>
@@ -78,9 +83,14 @@
                     <td class="judge_button_td">
                         <button id="judge_button">Word Judge</button>
                     </td>
+                    <td class="spacer"></td>
+                    <td class="prefs_button_td">
+                        <button id="prefs_button">Preferences</button>
+                    </td>
                 </tr>
             </table>
         </div>
+        <!-- Initial tabs -->
         <div id="tabs">
             <ul>
                 <li class="no_close"><a href="#welcome">Welcome</a></li>
@@ -89,6 +99,7 @@
             <p>Welcome to jQuizzyva! To get started, press one of the tool-bar buttons.</p>
             </div>
         </div>
+        <!-- "Word Judge" mode pane -->
         <div id="judge_pane" class="ui-helper-hidden" align="center">
             <table class="judge_pane_table">
                 <tr class="judge_pane_table_challenge">
@@ -108,31 +119,40 @@
             </table>
         </div>
 
+        <!-- Templates for on-the-fly creation. -->
         <div class="ui-helper-hidden" id="templates">
+            <!-- Templates for panes -->
             <div id="panes">
+                <!-- Template for search pane -->
                 <div id="search_pane">
                     <p>
-                    <table id="search_options"></table>
-                    </p>
-                    <table class="search_button_table">
-                    <tr>
-                        <td class="search_submit_button">
-                        <input value="Submit" type="button" id="do_search" />
-                        </td>
-                        <td class="search_flash_messages">
-                        <div class="flash_messages"></div>
-                        </td>
-                    </tr>
+                    <table id="search_options">
+                        <tr>
+                            <td colspan=6 class="search_lexicon_select">
+                            </td>
+                        </tr>
+                        <tr class="search_button_table">
+                            <td class="search_submit_button" colspan=4>
+                            <input value="Submit" type="button" id="do_search" />
+                            </td>
+                            <td class="search_flash_messages" colspan=2>
+                            <div class="flash_messages"></div>
+                            </td>
+                        </tr>
                     </table>
+                    </p>
                     <p>
                     <table class="results_grid"></table>
                     </p>
                 </div>
+                <!-- Template for quiz pane -->
                 <div id="quiz_pane">
                     <p>This is a quiz pane.</p>
                 </div>
             </div>
+            <!-- Multiple-use components for individual panes -->
             <div id="components">
+                <!-- Individual "search lines" -->
                 <div id="search_component_set">
                 <table>
                     <tr id="search_component" class="search_components">
@@ -156,6 +176,21 @@
                     </tr>
                 </table>
                 </div>
+                <!-- Lexicon selection -->
+                <select class="search_lexicon">
+                    <option value="OWL2+LWL">North American (OWL2+LWL)</option>
+                    <option value="OSPD4+LWL">North American (OSPD4+LWL)</option>
+                    <option value="CSW">British (CSW)</option>
+                    <option value="WWF">Words With Friends</option>
+                    <option value="CD">British (CD)</option>
+                    <option value="ODS5">French (ODS5)</option>
+                    <option value="SWL">Dutch</option>
+                    <option value="Zinga">Italian</option>
+                    <option value="Volos">Antarctic</option>
+                    <option value="ODS4">French (ODS4)</option>
+                    <option value="OWL+LWL">North American (OWL+LWL)</option>
+                    <option value="OSWI">British</option>
+                </select>
             </div>
         </div>
     </body>
