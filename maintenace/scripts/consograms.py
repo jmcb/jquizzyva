@@ -124,6 +124,12 @@ def main (args):
 
     print "Done!"
 
+    print "Dropping consograms table ...",
+
+    con.execute("DROP TABLE IF EXISTS consograms")
+
+    print "Done!"
+
     print "Vacuuming database."
 
     con.execute("VACUUM")
