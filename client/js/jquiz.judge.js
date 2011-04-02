@@ -7,7 +7,8 @@ var judge_mode = function()
     tabs.loading = false;
 
     $("body").children().hide()
-    $("#judge_pane").show();
+    $("#judge_pane").show()
+    $(".current_lexicon_text").text("Using: " + current_lexicon())
     $("#return_button").click(function()
     {
         $("body").children().not(".ui-helper-hidden").not("ui-selectmenu-menu-popup").not("ul").show();

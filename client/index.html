@@ -72,6 +72,9 @@
                     <td class="save_button_td">
                         <button id="save_button">Save</button>
                     </td>
+                    <td class="prefs_button_td">
+                        <button id="prefs_button">Preferences</button>
+                    </td>
                     <td class="spacer"></td>
                     <td class="search_button_td">
                         <button id="search_button">Search</button>
@@ -79,13 +82,8 @@
                     <td class="quiz_button_td">
                         <button id="quiz_button">Quiz</button>
                     </td>
-                    <td class="spacer"></td>
                     <td class="judge_button_td">
                         <button id="judge_button">Word Judge</button>
-                    </td>
-                    <td class="spacer"></td>
-                    <td class="prefs_button_td">
-                        <button id="prefs_button">Preferences</button>
                     </td>
                 </tr>
             </table>
@@ -114,6 +112,7 @@
                 <tr class="judge_pane_table_return">
                     <td>
                     <p><button id="return_button" class="jquiz_button">Return to normal mode</button></p>
+                    <p class="current_lexicon_text"></p>
                     </td>
                 </tr>
             </table>
@@ -181,7 +180,7 @@
                 </table>
                 </div>
                 <!-- Lexicon selection -->
-                <select class="search_lexicon">
+                <select class="search_lexicon" id="search_lexicon_base">
                     <option value="OWL2+LWL">North American (OWL2+LWL)</option>
                     <option value="OSPD4+LWL">North American (OSPD4+LWL)</option>
                     <option value="CSW">British (CSW)</option>
