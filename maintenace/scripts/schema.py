@@ -16,8 +16,6 @@ def main (args):
 
     db = args[0]
 
-    print "Working on database %s..." % db
-
     try:
         con = sqlite3.connect(db)
     except:
