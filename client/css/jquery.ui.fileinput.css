@@ -18,7 +18,10 @@
 /*
  * DO NOT MODIFY
  */
-.fileinput-wrapper {position:relative;display:inline-block;zoom:0;*display:inline;overflow:hidden;padding:0;}
+.fileinput-wrapper {position:relative;display:inline-block;zoom:1;*display:inline;overflow:hidden;padding:0;}
+.fileinput-input {float:left;height:20px;padding:3px;overflow:hidden;width:150px;white-space:nowrap;}
+.fileinput-button {float:left;height:20px;padding:3px;overflow:hidden;white-space:nowrap;}
+.fileinput-button-text {padding:5px;}
 .fileinput-file {position:absolute;left:-9999px;-moz-opacity:0;filter:alpha(opacity=0);opacity:0;}
 
 /*
