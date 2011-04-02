@@ -85,6 +85,9 @@ def parse_condition (condition):
         if not SEARCH_VALUES.has_key(key):
             raise UnsupportedSearchArgument(key)
 
+        if value.isdigit(): 
+            value = int(value)
+
         args.update(SEARCH_VALUES[key].value(value))
 
     return type(**args)
