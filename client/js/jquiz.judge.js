@@ -50,7 +50,7 @@ var judge_mode = function()
                     words.push(this.trim());
             });
 
-        var data = {"w": JSON.stringify(words), "l": "CSW"};
+        var data = {"w": JSON.stringify(words), "l": current_lexicon()};
 
         $("#judge_entry").empty().addClass("loading_div");
 
