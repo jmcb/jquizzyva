@@ -18,6 +18,10 @@ var add_search = function(this_pane)
             })
         $(".add", comp).button({icons: {primary: "ui-icon-plus"}, text: false}).click(function(){add_search(this_pane)})
         $(".delete", comp).button({icons: {primary: "ui-icon-minus"}, text: false}).click(function(){
+            if (tabs.search_items == 1)
+                return false
+
+            tabs.search_items--
             $(this).parent().parent().empty()
             return false
         })
@@ -167,7 +171,6 @@ var add_search_pane = function ()
         })
 
     add_search(this_pane)
-    $(".delete", this_pane).button("option", "disabled", true)
     $("#tabs").tabs("select", $("#tabs").tabs("length") - 1)
     return $(this_pane)
 }
