@@ -4,7 +4,8 @@ from distutils.core import setup
 from distutils.extension import Extension
 
 ext_modules = [Extension("_pattern", ["util/_pattern.c"]),
-               Extension("_search", ["util/_search.c"]),]
+               Extension("_search", ["util/_search.c"]),
+               Extension("consogram", ["util/consogram.c"]),]
 
 setup(
   name = 'jquizzyva extensions',
