@@ -88,3 +88,7 @@ h2 {
 .search_lexicon_select {
     text-align: center;
 }
+
+.current_lexicon_text {
+    font-size: 0.8em;
+}
