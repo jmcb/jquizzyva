@@ -29,7 +29,7 @@ class SearchType (object):
 
     negated = False
 
-    def __init__ (self, negated=False):
+    def __init__ (self, negated=False, *args, **kwargs):
         """
         Create a new search type. This provides access for negation of search
         terms on a general basis, but otherwise all search terms created should
@@ -38,7 +38,7 @@ class SearchType (object):
         :param negated: If True, the search term will be negated. Default False.
         """
 
-        super(SearchType, self).__init__()
+        super(SearchType, self).__init__(*args, **kwargs)
 
         self.negated = negated
 
@@ -231,7 +231,7 @@ else:
             return cls(**my_dict)
 
         def asjson (self):
-            return json.dumps(self.as_dict())
+            return json.dumps(self.asdict())
 
         @classmethod
         def fromjson (cls, data):
@@ -268,7 +268,7 @@ else:
             return cls(**my_dict)
 
         def asjson (self):
-            return json.dumps(self.as_dict())
+            return json.dumps(self.asdict())
 
         @classmethod
         def fromjson (cls, data):
@@ -283,21 +283,21 @@ else:
     class SubanagramMatch (SubanagramMatchBase, StringSearch):
         column = "words.alphagram"
 
-        def as_dict (self):
+        def asdict (self):
             return {"search_type": "SubanagramMatch", "search_string": self.search_string, "negated": self.negated}
 
         @classmethod
-        def from_dict (cls, my_dict):
+        def fromdict (cls, my_dict):
             my_dict = dict(my_dict)
             my_dict.pop("search_type")
             return cls(**my_dict)
 
-        def as_json (self):
-            return json.dumps(self.as_dict())
+        def asjson (self):
+            return json.dumps(self.asdict())
 
         @classmethod
-        def from_json (cls, data):
-            return cls.from_dict(json.loads(data))
+        def fromjson (cls, data):
+            return cls.fromdict(json.loads(data))
 
 class TakesPrefix (StringSearch):
     """
