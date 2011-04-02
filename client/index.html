@@ -48,15 +48,15 @@
                 closable: 'all',
                 closeTemplate: '<a onclick="return false;"><span class="ui-icon-close"></span></a>',
                 closeAnchorClass: 'ui-tabs-close ui-button-icon-primary ui-icon ui-icon-closethick',
-            });
+            })
 
             $("#quiz_button").button({icons: {primary: "ui-icon-lightbulb"}}).click(add_quiz_pane)
-            $("#search_button").button({icons: {primary: "ui-icon-search"}}).click(add_search_pane);
-            $("#judge_button").button({icons: {primary: "ui-icon-person"}}).click(judge_mode);
-            $("#load_button").button({icons: {primary: "ui-icon-folder-open"}}).click(loader);
-            $("#save_button").button({icons: {primary: "ui-icon-disk"}}).click(saver);
-            $("#prefs_button").button({icons: {primary: "ui-icon-pencil"}}).click(preferences);
-            $("#return_button").button();
+            $("#search_button").button({icons: {primary: "ui-icon-search"}}).click(add_search_pane)
+            $("#judge_button").button({icons: {primary: "ui-icon-person"}}).click(judge_mode)
+            $("#load_button").button({icons: {primary: "ui-icon-folder-open"}}).click(loader)
+            $("#save_button").button({icons: {primary: "ui-icon-disk"}}).click(saver)
+            $("#prefs_button").button({icons: {primary: "ui-icon-pencil"}}).click(preferences)
+            $("#return_button").button()
         }); 
         </script>        
         <title>jQuizzyva!</title>
@@ -166,11 +166,15 @@
                             <option value="AnagramMatch">Anagram Match</option>
                             <option value="SubanagramMatch">Subanagram Match</option>
                             <option value="PatternMatch">Pattern Match</option>
+                            <option value="TakesPrefix">Takes Prefix</option>
+                            <option value="TakesSuffix">Takes Suffix</option>
+                            <option value="IncludesLetters">Includes Letters</option>
                             <option value="Length">Length</option>
                             <option value="NumberOfVowels">Number of vowels</option>
                             <option value="NumberOfAnagrams">Number of anagrams</option>
                             <option value="NumberOfUniqueLetters">Number of unique letters</option>
                             <option value="PointValue">Point value</option>
+                            <!-- <option value="BelongsToGroup">Belongs to Group</option> -->
                         </select></td>
                         <td class="search_term_first">
                         </td>
