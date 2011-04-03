@@ -38,10 +38,13 @@ class AnagramPattern (object):
     blanks = 0
     wildcard = False
     sets = None
+    neg_sets = None
     letters = None
     cpattern = None
 
     length = 0
+
+    blank_store = None
 
     def __init__ (self, subanagram=False):
         """
@@ -59,7 +62,9 @@ class AnagramPattern (object):
         super(AnagramPattern, self).__init__()
 
         self.sets = []
+        self.neg_sets = []
         self.letters = []
+        self.blank_store = []
 
         self.subanagram = subanagram
 
@@ -177,14 +182,15 @@ class AnagramPattern (object):
         length = self.length
         subanagram = self.subanagram
         wildcard = self.wildcard
+        used_blanks = []
 
         wordlen = len(word)
 
         if not wildcard and wordlen > length:
-            return False
+            return False, []
 
         if wordlen < length and not subanagram:
-            return False
+            return False, []
 
         for letter in word:
             if letter in letters:
@@ -195,13 +201,14 @@ class AnagramPattern (object):
 
             for nind, nset in enumerate(nsets):
                 if letter in nset:
-                    return False
+                    return False, []
                 else:
                     got_nset = nind
                     continue
 
             if got_nset is not None:
                 del nsets[got_nset]
+                used_blanks.append(letter)
                 continue
 
             got_set = None
@@ -214,21 +221,26 @@ class AnagramPattern (object):
 
             if got_set is not None:
                 del sets[got_set]
+                used_blanks.append(letter)
                 continue
 
             if blanks > 0:
                 blanks -= 1
+                used_blanks.append(letter)
                 continue
 
             if wildcard:
+                used_blanks.append(letter)
                 continue
 
-            return False
+            return False, []
 
         if letters and sets and blanks and not subanagram:
-            return False
+            return False, []
 
-        return True
+        self.blank_store.append(used_blanks)
+
+        return True, used_blanks
 
     def bounds (self):
         """

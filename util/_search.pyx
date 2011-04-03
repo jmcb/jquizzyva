@@ -23,7 +23,7 @@ cdef class AnagramMatchBase (object):
         def search_function (char* word):
             return util._pattern.try_word(self.cpatternobj, word)
 
-        return search_function
+        return search_function, self.patternobj
 
     cpdef object bounds (self):
         return self.patternobj.bounds()
@@ -49,7 +49,7 @@ cdef class SubanagramMatchBase (object):
         def search_function (char* word):
             return util._pattern.try_word(self.cpatternobj, word)
 
-        return search_function
+        return search_function, self.patternobj
 
     cpdef object bounds (self):
         return self.patternobj.bounds()
@@ -75,7 +75,7 @@ cdef class PatternMatchBase (object):
         def search_function (object word):
             return bool(self.regexp.match(word))
 
-        return search_function
+        return search_function, self.patternobj
 
     cpdef object bounds (self):
         return self.patternobj.bounds()

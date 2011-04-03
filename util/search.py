@@ -131,6 +131,8 @@ except:
         the database.
         """
 
+        patternobj = None
+        regexpobj = None
         column = "words.word"
 
         def clause (self):
@@ -146,12 +148,13 @@ except:
 
         def pattern (self):
             if self.patternobj is None:
-                self.patternobj = util.pattern.Pattern.fromstring(self.search_string).as_regexp()
+                self.patternobj = util.pattern.Pattern.fromstring(self.search_string)
+                self.regexpobj = self.patternobj.as_regexp()
 
             def search_function (word):
-                return bool(self.patternobj.match(word))
+                return (bool(self.regexpobj.match(word)), 0)
 
-            return search_function
+            return search_function, self.patternobj
 
         def bounds (self):
             return self.patternobj.bounds()
@@ -180,7 +183,7 @@ except:
             def search_function (word):
                 return self.patternobj.try_word(word)
 
-            return search_function
+            return search_function, self.patternobj
 
         def bounds (self):
             return self.patternobj.bounds()
@@ -202,7 +205,7 @@ except:
             def search_function (word):
                 return self.patternobj.try_word(word)
 
-            return search_function
+            return search_function, self.patternobj
 else:
     class _SimplePatternMatch (StringSearch):
         column = "words.word"
@@ -521,7 +524,7 @@ class SearchList (object):
     def query (self):
         args = []
         functions = {}
-        query = "SELECT alphagram, front_hooks, word as MYWORD, back_hooks, definition FROM words WHERE "
+        query = "SELECT front_hooks, word as MYWORD, back_hooks, definition FROM words WHERE "
 
         maybe_query = None
 

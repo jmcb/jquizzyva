@@ -11,6 +11,7 @@ cdef class CAnagramPattern (object):
     cdef list sets
     cdef list neg_sets
     cdef list letters
+    cdef public list blank_store
 
     def __init__ (CAnagramPattern self, int blanks, int length, int num_letters, list letters, int num_sets, list sets, int num_neg_sets, list neg_sets, bint subanagram, bint wildcard):
         self.blanks = blanks
@@ -23,6 +24,10 @@ cdef class CAnagramPattern (object):
         self.sets = sets
         self.neg_sets = neg_sets
         self.letters = letters
+        self.blank_store = []
+
+    cpdef object used_blanks (CAnagramPattern self):
+        return self.blank_store
 
 def try_word (CAnagramPattern pattern, char* word):
     return _try_word(pattern, word)
@@ -54,6 +59,9 @@ cdef int _try_word (CAnagramPattern pattern, char* word):
 
     cdef char letter
 
+    cdef char[15] blank_letters
+    cdef int cur_blank = 0
+
     if not wildcard and wordlen > length:
         return 0
 
@@ -83,6 +91,8 @@ cdef int _try_word (CAnagramPattern pattern, char* word):
         if got_nset > -1:
             del nsets[got_nset]
             num_neg_sets -= 1
+            blank_letters[cur_blank] = letter
+            cur_blank += 1
             continue
 
         got_set = -1
@@ -99,13 +109,19 @@ cdef int _try_word (CAnagramPattern pattern, char* word):
         if got_set > -1:
             del sets[got_set]
             num_sets -= 1
+            blank_letters[cur_blank] = letter
+            cur_blank += 1
             continue
 
         if blanks > 0:
             blanks -= 1
+            blank_letters[cur_blank] = letter
+            cur_blank += 1
             continue
 
         if wildcard:
+            blank_letters[cur_blank] = letter
+            cur_blank += 1
             continue
 
         return 0
@@ -113,4 +129,6 @@ cdef int _try_word (CAnagramPattern pattern, char* word):
     if (num_letters or num_sets or blanks) and not subanagram:
         return 0
 
-    return 1
+    pattern.blank_store.append(str(blank_letters[:cur_blank]))
+
+    return 1 

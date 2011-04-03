@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import itertools
 import os
 import sqlite3
 
@@ -76,16 +77,28 @@ class Database (object):
             query, args, functions = searchlist.query()
 
         if functions:
-            for fname, fn in functions.items():
+            for fname, (fn, pat) in functions.items():
                 if DO_MEMOIZE:
-                    self.register(fname, util.memoize.Memoizer(fn))
+                    self.register(fname, util.memoize.Memoizer(fn, pat))
                 else:
                     self.register(fname, fn)
 
         if show_query:
             print query.replace("?", "%s") % tuple(args)
 
-        return self.query(query, tuple(args))
+        result = self.query(query, tuple(args))
+
+        used_blanks = [''] * len(result)
+
+        if functions:
+            for fname, (fn, pat) in functions.items():
+                if hasattr(pat, "cpattern"):
+                    bs = pat.cpattern.used_blanks()
+                else:
+                    bs = pat.blank_store
+                used_blanks = ["".join(itertools.chain(*x)) for x in zip(used_blanks, bs)]
+
+        return [(a, ) + b for a, b in zip(used_blanks, result)]
 
     def challenge (self, words):
         query = "SELECT word FROM words WHERE " + " OR ".join(["word=?" for word in words])
