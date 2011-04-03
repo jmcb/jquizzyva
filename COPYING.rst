@@ -62,6 +62,12 @@ MIT license.
 The jQuery `cookie`_ plug-in is dual licensed under the GNU Public License and
 the MIT license.
 
+---
+
+The jQuery `caret`_ plug-in is licensed under the MIT license.
+
+.. _`caret`: http://plugins.jquery.com/project/jCaret 
+
 .. _`cookie`: http://plugins.jquery.com/project/Cookie
 
 .. _`forms`: http://malsup.com/jquery/form/#download
