@@ -21,8 +21,8 @@ def jsonw (f):
     return jsonw
 
 def xml (fn):
-    print """Content-type: application/xml; name='%s'""" % fn
-    print """Content-disposition: attachment; filename='%s'""" % fn
+    print """Content-type: application/xml; name=%s""" % fn
+    print """Content-disposition: attachment; filename=%s""" % fn
 
 def html ():
     print """Content-type: text/html"""
