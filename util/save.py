@@ -23,7 +23,7 @@ def search_to_type (search):
             except:
                 continue
             
-            if isinstance(search, inst(**v)):
+            if isinstance(search, c.__class__):
                 return type
 
     return None
