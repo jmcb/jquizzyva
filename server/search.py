@@ -86,7 +86,7 @@ def save (args, cgi_args, lexicon):
     if search_term is None:
         return
 
-    xml("search.xml")
+    xml("search.zzs")
     print util.save.search_list_to_xml(util.search.SearchList.fromjson(search_term))
 
 def main (args, cgi_args):
