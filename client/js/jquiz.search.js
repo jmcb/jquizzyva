@@ -54,7 +54,9 @@ var add_search = function(this_pane)
                             }
                         }).keyup(function()
                             {
+                                var car = $(this).caret()
                                 $(this).val($(this).val().toUpperCase())
+                                $(this).caret(car)
                             })
                     }
 
