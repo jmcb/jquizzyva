@@ -1,27 +1,29 @@
 var add_search = function(this_pane)
     {
-        tabs.search_items++
+        var cur_index = parseInt($("#tabs").tabs("option", "selected")) - 1
+
+        tabs.search_items[cur_index]++
 
         var comp = $("#search_component").clone()
 
-        comp.attr("id", "search_component"+tabs.search_items)
+        comp.attr("id", "search_component"+tabs.search_items[cur_index])
         comp.children().children().each(function(index)
             {
                 if ($(this).attr("id"))
                 {
-                    $(this).attr("id", $(this).attr("id")+tabs.search_items)
+                    $(this).attr("id", $(this).attr("id")+tabs.search_items[cur_index])
                 }
                 if ($(this).attr("for"))
                 {
-                    $(this).attr("for", $(this).attr("for")+tabs.search_items)
+                    $(this).attr("for", $(this).attr("for")+tabs.search_items[cur_index])
                 }
             })
         $(".add", comp).button({icons: {primary: "ui-icon-plus"}, text: false}).click(function(){add_search(this_pane)})
         $(".delete", comp).button({icons: {primary: "ui-icon-minus"}, text: false}).click(function(){
-            if (tabs.search_items == 1)
+            if (tabs.search_items[cur_index] <= 1)
                 return false
 
-            tabs.search_items--
+            tabs.search_items[cur_index]--
             $(this).parent().parent().empty()
             return false
         })
@@ -92,8 +94,10 @@ var add_search = function(this_pane)
 var add_search_pane = function ()
 {
     tabs.search_tabs++
+    tabs.search_items.push(0)
     var this_pane = "#search_pane" + tabs.search_tabs
     $("#tabs").tabs("add", this_pane, "Search&nbsp;&nbsp;")
+    $("#tabs").tabs("select", $("#tabs").tabs("length") - 1)
     $(this_pane).append($("#search_pane").children().clone())
     $(".results_grid", $(this_pane)).flexigrid({
         height:'auto',
@@ -171,7 +175,6 @@ var add_search_pane = function ()
         })
 
     add_search(this_pane)
-    $("#tabs").tabs("select", $("#tabs").tabs("length") - 1)
     return $(this_pane)
 }
 
