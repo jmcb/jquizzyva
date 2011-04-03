@@ -30,7 +30,10 @@ var load_save = function (data)
             }
 
             if (this.negated)
-                $(".negated", new_row).val("off")
+            {
+                if ($(".negated", new_row).val() != "off")
+                    $(".negated", new_row).button("widget").trigger("click.button")
+            }
         }
     )
 }
