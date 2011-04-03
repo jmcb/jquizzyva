@@ -204,7 +204,7 @@ var serialise_row = function (row) {
     }
 }
 
-var validate_row = function (row)
+var validate_row = function (row, no_message)
 {
     var search_type = $(".search_types", row).val()
     var flash_message = ""
@@ -238,6 +238,9 @@ var validate_row = function (row)
 
     if (flash_message.trim() != "")
     {
+        if (no_message)
+            return false;
+        
         $(".flash_messages", par).empty()
         $("<span>"+flash_message+"</span>").attr("id", "cur_flash_message").appendTo(".flash_messages", par).fadeIn().fadeOut().fadeIn()
         setTimeout(function() {
