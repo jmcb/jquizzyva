@@ -290,9 +290,11 @@ class Pattern (AnagramPattern):
         if self._regexp is not None:
             return self._regexp
 
-        pat = self.pattern.replace("?", ".").replace("*", ".*")
+        pat = self.pattern.replace("?", "(.)").replace("*", "(.+)")
         if not pat.endswith("$"):
             pat = pat + "$"
+
+        pat = self.pattern.replace("[", "([").replace("]", "])")
 
         self._regexp = re.compile(pat)
 

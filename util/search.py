@@ -136,15 +136,7 @@ except:
         column = "words.word"
 
         def clause (self):
-            if "[" in self.search_string:
-                return CALLBACK_FUNCTION
-
-            st = self.search_string.replace("?", "_").replace("*", "%")
-
-            if self.negated:
-                return ("%s NOT LIKE ?" % self.column, (st, ))
-            else:
-                return ("%s LIKE ?" % self.column, (st, ))
+            return CALLBACK_FUNCTION
 
         def pattern (self):
             if self.patternobj is None:
@@ -152,7 +144,11 @@ except:
                 self.regexpobj = self.patternobj.as_regexp()
 
             def search_function (word):
-                return (bool(self.regexpobj.match(word)), 0)
+                match = self.regexpobj.match(word)
+                if match is None:
+                    return (False, '')
+
+                return (True, ''.join(match.groups()))
 
             return search_function, self.patternobj
 
@@ -207,21 +203,7 @@ except:
 
             return search_function, self.patternobj
 else:
-    class _SimplePatternMatch (StringSearch):
-        column = "words.word"
-
-        def clause (self):
-            st = self.search_string.replace("?", "_").replace("*", "%")
-
-            if self.negated:
-                return ("%s NOT LIKE ?" % self.column, (st, ))
-            else:
-                return ("%s LIKE ?" % self.column, (st, ))
-
-        def asdict (self):
-            return {"search_type": "PatternMatch", "search_string": self.search_string, "negated": self.negated}
-
-    class _PatternMatch (PatternMatchBase, StringSearch):
+    class PatternMatch (PatternMatchBase, StringSearch):
         column = "words.word"
 
         def asdict (self):
@@ -239,12 +221,6 @@ else:
         @classmethod
         def fromjson (cls, data):
             return cls.fromdict(json.loads(data))
-
-    def PatternMatch (search_string, negated=False):
-        if "[" in search_string:
-            return _PatternMatch(search_string=search_string, negated=negated)
-        else:
-            return _SimplePatternMatch(search_string=search_string, negated=negated)
 
     class _AlphagramMatch (StringSearch):
         column = "words.alphagram"

@@ -68,12 +68,21 @@ cdef class PatternMatchBase (object):
         return CALLBACK_FUNCTION
 
     def pattern (self):
+        cdef object match
+
         if self.patternobj is None:
             self.patternobj = util.pattern.Pattern.fromstring(self.search_string)
             self.regexp = self.patternobj.as_regexp()
 
         def search_function (object word):
-            return bool(self.regexp.match(word))
+            match = self.regexp.match(word)
+
+            if match is None:
+                return False
+
+            self.patternobj.blank_store.append(''.join(match.groups()))
+
+            return True
 
         return search_function, self.patternobj
 
