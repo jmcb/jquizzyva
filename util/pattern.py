@@ -294,7 +294,7 @@ class Pattern (AnagramPattern):
         if not pat.endswith("$"):
             pat = pat + "$"
 
-        pat = self.pattern.replace("[", "([").replace("]", "])")
+        pat = pat.replace("[", "([").replace("]", "])")
 
         self._regexp = re.compile(pat)
 
