@@ -92,7 +92,7 @@ class Database (object):
 
         if functions:
             for fname, (fn, pat) in functions.items():
-                if hasattr(pat, "cpattern"):
+                if hasattr(pat, "cpattern") and pat.cpattern:
                     bs = pat.cpattern.used_blanks()
                 else:
                     bs = pat.blank_store

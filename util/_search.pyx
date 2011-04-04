@@ -77,10 +77,11 @@ cdef class PatternMatchBase (object):
         def search_function (object word):
             match = self.regexp.match(word)
 
-            if match is None:
+            if not match:
                 return False
 
-            self.patternobj.blank_store.append(''.join(match.groups()))
+            blanks = ''.join([x for x in match.groups() if x])
+            self.patternobj.blank_store.append(blanks)
 
             return True
 

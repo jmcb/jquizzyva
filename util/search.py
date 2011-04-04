@@ -145,10 +145,13 @@ except:
 
             def search_function (word):
                 match = self.regexpobj.match(word)
-                if match is None:
-                    return (False, '')
+                if not match:
+                    return (False, 0)
 
-                return (True, ''.join(match.groups()))
+                blanks = ''.join([x for x in match.groups() if x])
+                self.patternobj.blank_store.append(blanks)
+
+                return (True, blanks)
 
             return search_function, self.patternobj
 
