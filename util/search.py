@@ -289,6 +289,9 @@ class TakesPrefix (StringSearch):
     column = "words.word"
 
     def clause (self):
+        if len(self.search_string) == 1:
+            return ("words.front_hooks LIKE ?", ("%" + self.search_string + "%")
+
         return ("?||words.word IN (SELECT word AS pos_word FROM words WHERE pos_word=?||MYWORD)", (self.search_string, self.search_string))
 
 class TakesSuffix (StringSearch):
@@ -299,6 +302,9 @@ class TakesSuffix (StringSearch):
     column = "words.word"
 
     def clause (self):
+        if len(self.search_string) == 1:
+            return ("words.back_hooks LIKE ?", ("%" + self.search_string + "%")
+
         return ("words.word||? IN (SELECT word AS pos_word FROM words WHERE pos_word=MYWORD||?)", (self.search_string, self.search_string))
 
 class RangeSearch (SearchType):
