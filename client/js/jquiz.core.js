@@ -1,12 +1,15 @@
-var dialog = function (title, text, no_load)
+var dialog = function (my_title, text, no_load)
 {
     var dia = $("<div>"
+        ).append(
+            (text) ? $("<p>").text(text) : ""
         ).append(
             $("<p>").addClass(
                 (no_load) ? "" : "loading_div"
                 ).html("&nbsp;")
         ).addClass("jquiz_dialog"
         ).dialog({
+            title: my_title,
             modal: true,
             buttons: ((no_load) ? {
                 "OK": function() {
@@ -17,7 +20,6 @@ var dialog = function (title, text, no_load)
                 function() {
                     $(this).dialog("destroy").remove()
                 },
-            title: text,
             }
         ).dialog("open")
     return dia
@@ -27,7 +29,7 @@ var current_lexicon = function (no_default)
 {
     var cur = $.cookie("jquiz_default_lexicon")
     
-    if (!cur && no_default)
+    if (!cur && !no_default)
         return "CSW"
 
     return cur

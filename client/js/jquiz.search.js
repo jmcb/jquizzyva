@@ -41,7 +41,7 @@ var add_search = function(this_pane)
                             var is_number = row_elements(row) == 2
 
                             var keys = String.fromCharCode(event.which).toUpperCase()
-                            if (/[A-Z\[\]\*\?\^0-9]*/.test(keys))
+                            if (/[A-Z\[\]\*\?\^0-9]+/.test(keys))
                             {
                                 if (!is_number && /\d/.test(keys))
                                 {
@@ -60,8 +60,8 @@ var add_search = function(this_pane)
                             })
                     }
 
-                var val = $(this).val()
-                if (val == "AnagramMatch" || val == "SubanagramMatch" || val == "PatternMatch")
+                var val = $(this).selectmenu("index")
+                if (val <= 5)
                 {
                     var row = $(".search_term_first", $(this).parent().parent())
                     if (!row.children().length)
@@ -79,13 +79,13 @@ var add_search = function(this_pane)
                     if (!row.children().length)
                         row.empty().append(make_input())
                     else if (/[^\d]/.test($("input", row).val()))
-                        $("input", row).val("")
+                        $("input", row).val("0")
 
                     row = $(".search_term_second", $(this).parent().parent())
                     if (!row.children().length)
                         row.empty().append(make_input())
                     else if (/[^\d]/.test($("input", row).val()))
-                        $("input", row).val("")
+                        $("input", row).val("15")
                 }
             }).change()
 
@@ -128,7 +128,7 @@ var add_search_pane = function ()
 
             $(".search_components", this_pane).each(function()
                 {
-                    if (!validate_row(this))
+                    if (!validate_row(this_pane, this))
                     {
                         validate_failed = true
                         return false
@@ -140,7 +140,7 @@ var add_search_pane = function ()
             if (validate_failed)
                 return false
 
-            var progress = dialog("Searching, please wait...")
+            var progress = dialog("Searching...", "")
 
             lexicon = $(".search_lexicon_select", this_pane).children().first().val()
 
@@ -159,10 +159,12 @@ var add_search_pane = function ()
 
                     if (results.total == 0)
                     {
-                        $(".flash_messages", this_pane).empty()
-                        $("<span>No results.</span>").attr("id", "cur_flash_message").appendTo(".flash_messages", this_pane).fadeIn().fadeOut().fadeIn()
+                        var flash =  $(".flash_messages", this_pane)
+                        flash.empty()
+                        var info = $("<span>No results.</span>")
+                        info.appendTo(flash).fadeIn().fadeOut().fadeIn()
                         setTimeout(function() {
-                            $("#cur_flash_message").fadeOut(500)
+                            info.fadeOut(500).remove()
                         }, 3000)
                     }
                 })
@@ -182,8 +184,8 @@ var add_search_pane = function ()
 
 var row_elements = function (row)
 {
-    var search_type = $(".search_types", row).val()
-    if (search_type == "AnagramMatch" || search_type == "SubanagramMatch" || search_type == "PatternMatch")
+    var search_type = $(".search_types", row).selectmenu("index")
+    if (search_type <= 5)
     {
         return 1
     }
@@ -206,11 +208,10 @@ var serialise_row = function (row) {
     }
 }
 
-var validate_row = function (row, no_message)
+var validate_row = function (pane, row, no_message)
 {
     var search_type = $(".search_types", row).val()
     var flash_message = ""
-    var par = $(this).parent().parent().parent().parent().parent()
 
     if ($(".search_term_first input", row).val().trim()=="")
     {
@@ -243,10 +244,12 @@ var validate_row = function (row, no_message)
         if (no_message)
             return false;
         
-        $(".flash_messages", par).empty()
-        $("<span>"+flash_message+"</span>").attr("id", "cur_flash_message").appendTo(".flash_messages", par).fadeIn().fadeOut().fadeIn()
+        var flash = $(".flash_messages", pane)
+        flash.empty()
+        var info = $("<span>"+flash_message+"</span>")
+        info.appendTo(flash).fadeIn().fadeOut().fadeIn()
         setTimeout(function() {
-            $("#cur_flash_message").fadeOut(500)
+            info.fadeOut(500).remove()
         }, 3000)
 
         return false

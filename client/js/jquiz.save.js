@@ -11,7 +11,7 @@ var saver = function() {
 
     $(".search_components", cur_pane).each(function()
         {
-            if (!validate_row(this, true))
+            if (!validate_row(cur_pane, this, true))
             {
                 validate_failed = true
                 return false
