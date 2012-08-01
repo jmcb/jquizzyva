@@ -2,6 +2,7 @@
 
 LEXICONS = {
     "CSW": "lexicon/CSW.db",
+    "CSW12": "lexicon/CSW12.db",
     "CD": "lexicon/CD.db",
     "ODS4": "lexicon/ODS4.db",
     "ODS5": "lexicon/ODS5.db",

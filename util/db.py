@@ -115,6 +115,9 @@ class Database (object):
 def csw ():
     return Database(util.config.LEXICONS["CSW"])
 
+def csw12 ():
+    return Database(util.config.LEXICONS["CSW12"])
+
 def cd ():
     return Database(util.config.LEXICONS["CD"])
 
