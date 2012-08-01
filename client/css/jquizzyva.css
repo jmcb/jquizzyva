@@ -36,6 +36,10 @@ body {
     padding: 10px 4px;
 }
 
+#judge_button {
+    width: 10em;
+}
+
 .flash_messages {
     font-weight: bold;
     font-size: 1.1em;
